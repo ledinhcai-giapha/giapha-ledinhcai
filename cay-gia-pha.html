@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Cây gia phả dòng họ Lê</title>
+<title>Gia phả dòng họ Lê Đình</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="https://d3js.org/d3.v7.min.js"></script>
 
@@ -11,27 +11,29 @@
     font-family: "Times New Roman", serif;
     margin: 0;
     padding: 10px;
+    overflow-x: auto; /* QUAN TRỌNG: cho cuộn ngang */
   }
 
   h1 {
     text-align: center;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
+    letter-spacing: 1px;
   }
 
   svg {
-    width: 100%;
+    width: 3000px;   /* rộng lớn cho 20 đời */
     height: 95vh;
   }
 
   .link {
     fill: none;
     stroke: #999;
-    stroke-width: 1.5px;
+    stroke-width: 1.4px;
   }
 
   .node rect {
     stroke: #333;
-    stroke-width: 1.5px;
+    stroke-width: 1.4px;
     rx: 6;
     ry: 6;
   }
@@ -55,69 +57,10 @@
 </head>
 
 <body>
-<h1>CÂY GIA PHẢ DÒNG HỌ LÊ</h1>
+<h1>GIA PHẢ DÒNG HỌ LÊ ĐÌNH</h1>
+
 <svg></svg>
 
 <script>
 const colorByChi = {
-  "root": "#f2f2f2",
-  "chi1": "#ffe0e0",
-  "chi2": "#e0f0ff",
-  "chi3": "#e0ffe8",
-  "chi4": "#fff5d9",
-  "chi5": "#f3e0ff"
-};
-
-fetch("./data-gia-pha.json")
-  .then(res => res.json())
-  .then(data => {
-
-    const svg = d3.select("svg")
-      .append("g")
-      .attr("transform", "translate(120,60)");
-
-    const tree = d3.tree().nodeSize([90, 240]);
-    const root = d3.hierarchy(data);
-    tree(root);
-
-    svg.selectAll(".link")
-      .data(root.links())
-      .enter()
-      .append("path")
-      .attr("class", "link")
-      .attr("d", d3.linkHorizontal()
-        .x(d => d.y)
-        .y(d => d.x)
-      );
-
-    const node = svg.selectAll(".node")
-      .data(root.descendants())
-      .enter()
-      .append("g")
-      .attr("class", "node")
-      .attr("transform", d => `translate(${d.y},${d.x})`);
-
-    node.append("rect")
-      .attr("x", -80)
-      .attr("y", -30)
-      .attr("width", 160)
-      .attr("height", 60)
-      .attr("fill", d => colorByChi[d.data.chi] || "#ffffff");
-
-    node.append("text")
-      .attr("class", "name")
-      .attr("y", -6)
-      .text(d => d.data.name || "");
-
-    node.append("text")
-      .attr("class", "doi")
-      .attr("y", 14)
-      .text(d => d.data.doi ? "Đời " + d.data.doi : "");
-  })
-  .catch(err => {
-    alert("Lỗi load data-gia-pha.json");
-    console.error(err);
-  });
-</script>
-</body>
-</html>
+  "root"
