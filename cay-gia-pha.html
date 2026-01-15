@@ -30,7 +30,7 @@ input,select{width:280px;margin-bottom:6px}
 svg{width:4000px;height:2500px}
 .node rect{fill:#fff;stroke:#333;rx:6;ry:6}
 .link{fill:none;stroke:#999}
-.locked{opacity:0.4;pointer-events:none}
+.locked{opacity:.4;pointer-events:none}
 </style>
 </head>
 
@@ -47,54 +47,24 @@ svg{width:4000px;height:2500px}
 
 <!-- TRANG CHỦ -->
 <div id="home" class="section active">
-  <div class="intro">
   <h2 style="text-align:center">LỜI GIỚI THIỆU</h2>
 
-  <p>
-    Gia phả là sợi dây nối liền các thế hệ, là nơi lưu giữ cội nguồn,
-    công đức tổ tiên và truyền thống của dòng họ qua bao đời.
-  </p>
+  <p>Gia phả là sợi dây nối liền các thế hệ, là nơi lưu giữ cội nguồn, công đức tổ tiên và truyền thống của dòng họ qua bao đời.</p>
 
-  <p>
-    Dòng họ Lê chúng ta lấy <b>Thủy tổ là Cụ Lê Đình Cai</b>,
-    con trai của <b>Hoàng thân Lê Duy Mật</b>, làm gốc.
-    Từ Thủy tổ, các đời con cháu tiếp nối sinh sôi, lập nghiệp,
-    đóng góp cho gia đình, quê hương và đất nước.
-  </p>
+  <p>Dòng họ Lê chúng ta lấy <b>Thủy tổ là Cụ Lê Đình Cai</b>, con trai của <b>Hoàng thân Lê Duy Mật</b>, làm gốc. Từ Thủy tổ, các đời con cháu tiếp nối sinh sôi, lập nghiệp, đóng góp cho gia đình, quê hương và đất nước.</p>
 
-  <p>
-    Trải qua thời gian, nhiều tư liệu gia phả bằng giấy đã mai một,
-    phân tán hoặc khó bảo quản. Việc xây dựng Gia phả điện tử nhằm:
-  </p>
+  <p>Trải qua thời gian, nhiều tư liệu gia phả bằng giấy đã mai một, phân tán hoặc khó bảo quản. Việc xây dựng Gia phả điện tử nhằm:</p>
 
   <ul>
     <li>Gìn giữ đầy đủ, chính xác thông tin các thế hệ trong dòng họ</li>
     <li>Giúp con cháu dễ dàng tra cứu cội nguồn, vai vế, thứ bậc</li>
     <li>Thuận tiện trong việc tổ chức giỗ tổ, giỗ chi, tưởng nhớ tổ tiên</li>
-    <li>Kết nối con cháu trong và ngoài nước, dù ở bất cứ nơi đâu</li>
+    <li>Kết nối con cháu trong và ngoài nước</li>
   </ul>
 
-  <p>
-    Gia phả điện tử này được xây dựng trên tinh thần
-    <b>tôn trọng lịch sử – giữ gìn truyền thống – truyền lại cho mai sau</b>.
-    Mọi thông tin đều được Ban gia phả rà soát, bổ sung và cập nhật cẩn trọng.
-  </p>
+  <p>Gia phả điện tử được xây dựng trên tinh thần <b>tôn trọng lịch sử – giữ gìn truyền thống – truyền lại cho mai sau</b>.</p>
 
-  <p>
-    Nguyện mong con cháu đời sau, khi xem gia phả,
-    luôn nhớ đến công lao tổ tiên, giữ gìn nề nếp gia phong,
-    đoàn kết yêu thương, cùng nhau làm rạng danh dòng họ.
-  </p>
-
-  <p>
-    Gia phả này là tài sản chung của toàn thể dòng họ,
-    được lưu giữ và sử dụng cho mục đích tưởng nhớ tổ tiên
-    và giáo dục truyền thống cho các thế hệ mai sau.
-  </p>
-
-  <div class="footer" style="text-align:right;font-weight:bold;margin-top:30px">
-    Ban Gia phả dòng họ Lê Đình
-  </div>
+  <p style="text-align:right;font-weight:bold">Ban Gia phả dòng họ Lê Đình</p>
 </div>
 
 <!-- QUẢN LÝ -->
@@ -139,34 +109,31 @@ svg{width:4000px;height:2500px}
 </div>
 
 <script>
-/* ===== ADMIN ===== */
-const ADMIN_PASSWORD = "ledinh123";
-let isAdmin = localStorage.getItem("ledinh_admin")==="1";
+/* ADMIN */
+const ADMIN_PASSWORD="ledinh123";
+let isAdmin=localStorage.getItem("ledinh_admin")==="1";
 
 function adminLogin(){
- let p = prompt("Nhập mật khẩu Admin:");
+ let p=prompt("Nhập mật khẩu Admin:");
  if(p===ADMIN_PASSWORD){
    localStorage.setItem("ledinh_admin","1");
    alert("Đăng nhập Admin thành công");
    location.reload();
- } else alert("Sai mật khẩu");
+ }else alert("Sai mật khẩu");
 }
 
-function applyAdmin(){
- if(isAdmin){
-   document.getElementById("manageBox").classList.remove("locked");
-   document.getElementById("lockNote").style.display="none";
- }
+if(isAdmin){
+ document.getElementById("manageBox").classList.remove("locked");
+ document.getElementById("lockNote").style.display="none";
 }
-applyAdmin();
 
-/* ===== NAV ===== */
+/* NAV */
 function show(id){
  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
  document.getElementById(id).classList.add('active');
 }
 
-/* ===== DATA ===== */
+/* DATA */
 let data={
  id:1,
  name:"Thủy Tổ – Lê Đình Cai",
@@ -174,14 +141,11 @@ let data={
  gio:"Giỗ Tổ: 17 tháng Giêng",
  children:[]
 };
-let idCounter=2;
-let selectedId=null;
+let idCounter=2, selectedId=null;
 
 /* UTIL */
 function nodes(n,a=[]){
- a.push(n);
- (n.children||[]).forEach(c=>nodes(c,a));
- return a;
+ a.push(n); (n.children||[]).forEach(c=>nodes(c,a)); return a;
 }
 
 /* SELECT */
@@ -196,30 +160,25 @@ function refresh(){
 function addChild(){
  if(!isAdmin) return;
  let parent=nodes(data).find(n=>n.id==parentSelect.value);
- if(!nameInput.value){alert("Nhập họ tên");return;}
+ if(!nameInput.value) return alert("Nhập họ tên");
  parent.children.push({
-   id:idCounter++,
-   name:nameInput.value,
-   doi:parent.doi+1,
-   order:orderInput.value,
-   birth:birthInput.value,
-   home:homeInput.value,
-   gio:deathInput.value,
-   children:[]
+   id:idCounter++, name:nameInput.value,
+   doi:parent.doi+1, order:orderInput.value,
+   birth:birthInput.value, home:homeInput.value,
+   gio:deathInput.value, children:[]
  });
  clear(); refresh(); draw();
 }
 
 /* UPDATE */
 function updateNode(){
- if(!isAdmin) return;
- if(!selectedId||selectedId===1){alert("Chọn thành viên trên cây");return;}
+ if(!isAdmin||!selectedId||selectedId===1) return;
  let p=nodes(data).find(n=>n.id===selectedId);
- p.name=nameInput.value;
- p.order=orderInput.value;
- p.birth=birthInput.value;
- p.home=homeInput.value;
- p.gio=deathInput.value;
+ Object.assign(p,{
+   name:nameInput.value, order:orderInput.value,
+   birth:birthInput.value, home:homeInput.value,
+   gio:deathInput.value
+ });
  draw();
 }
 
@@ -235,19 +194,16 @@ function draw(){
  let root=d3.hierarchy(data);
  d3.tree().nodeSize([120,260])(root);
 
- g.selectAll(".link")
-  .data(root.links()).enter().append("path")
+ g.selectAll(".link").data(root.links()).enter().append("path")
   .attr("class","link")
   .attr("d",d3.linkHorizontal().x(d=>d.y).y(d=>d.x));
 
- let node=g.selectAll(".node")
-  .data(root.descendants()).enter().append("g")
+ let node=g.selectAll(".node").data(root.descendants()).enter().append("g")
   .attr("class","node")
   .attr("transform",d=>`translate(${d.y},${d.x})`)
   .on("click",(e,d)=>{
-    if(!isAdmin) return;
+    if(!isAdmin||d.data.id===1) return;
     selectedId=d.data.id;
-    if(d.data.id===1) return;
     nameInput.value=d.data.name;
     orderInput.value=d.data.order||"";
     birthInput.value=d.data.birth||"";
@@ -258,12 +214,11 @@ function draw(){
  node.append("rect").attr("x",-110).attr("y",-45).attr("width",220).attr("height",90);
  node.append("text").attr("y",-20).attr("text-anchor","middle").text(d=>d.data.name);
  node.append("text").attr("y",5).attr("text-anchor","middle")
-   .text(d=>d.data.id===1?"Thủy Tổ":"Đời "+d.data.doi+" – Con "+d.data.order);
+  .text(d=>d.data.id===1?"Thủy Tổ":"Đời "+d.data.doi+" – Con "+d.data.order);
  node.append("text").attr("y",20).attr("text-anchor","middle").text(d=>d.data.gio||"");
 }
 
-refresh();
-draw();
+refresh(); draw();
 </script>
 </body>
 </html>
