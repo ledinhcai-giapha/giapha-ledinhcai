@@ -11,17 +11,16 @@
     font-family: "Times New Roman", serif;
     margin: 0;
     padding: 10px;
-    overflow-x: auto; /* QUAN TRỌNG: cho cuộn ngang */
+    overflow-x: auto;
   }
 
   h1 {
     text-align: center;
     margin-bottom: 20px;
-    letter-spacing: 1px;
   }
 
   svg {
-    width: 3000px;   /* rộng lớn cho 20 đời */
+    width: 6000px;
     height: 95vh;
   }
 
@@ -39,9 +38,8 @@
   }
 
   .node text {
-    pointer-events: none;
     text-anchor: middle;
-    fill: #000;
+    pointer-events: none;
   }
 
   .name {
@@ -58,9 +56,79 @@
 
 <body>
 <h1>GIA PHẢ DÒNG HỌ LÊ ĐÌNH</h1>
-
 <svg></svg>
 
 <script>
-const colorByChi = {
-  "root"
+const MAX_DOI = 20;
+
+function buildTree(node, doi) {
+  if (doi >= MAX_DOI) return;
+
+  node.children = [];
+  const soCon = doi === 1 ? 5 : 2; // thủy tổ nhiều con, sau ít hơn
+
+  for (let i = 1; i <= soCon; i++) {
+    const child = {
+      name: `Đời ${doi + 1} – Con ${i}`,
+      doi: doi + 1
+    };
+    node.children.push(child);
+    buildTree(child, doi + 1);
+  }
+}
+
+// GỐC DUY NHẤT
+const data = {
+  name: "Lê Đình Cai",
+  doi: 1
+};
+
+buildTree(data, 1);
+
+// VẼ CÂY
+const svg = d3.select("svg")
+  .append("g")
+  .attr("transform", "translate(200,80)");
+
+const tree = d3.tree().nodeSize([120, 300]);
+const root = d3.hierarchy(data);
+tree(root);
+
+// Nhánh
+svg.selectAll(".link")
+  .data(root.links())
+  .enter()
+  .append("path")
+  .attr("class", "link")
+  .attr("d", d3.linkHorizontal()
+    .x(d => d.y)
+    .y(d => d.x)
+  );
+
+// Node
+const node = svg.selectAll(".node")
+  .data(root.descendants())
+  .enter()
+  .append("g")
+  .attr("class", "node")
+  .attr("transform", d => `translate(${d.y},${d.x})`);
+
+node.append("rect")
+  .attr("x", -85)
+  .attr("y", -32)
+  .attr("width", 170)
+  .attr("height", 64)
+  .attr("fill", "#fff");
+
+node.append("text")
+  .attr("class", "name")
+  .attr("y", -6)
+  .text(d => d.data.name);
+
+node.append("text")
+  .attr("class", "doi")
+  .attr("y", 16)
+  .text(d => "Đời " + d.data.doi);
+</script>
+</body>
+</html>
