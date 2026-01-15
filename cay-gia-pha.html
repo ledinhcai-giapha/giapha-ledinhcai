@@ -10,8 +10,9 @@
 body{
   font-family:"Times New Roman",serif;
   margin:0;
-  padding:20px;
-  background:url("https://i.imgur.com/9cZ8F1Q.jpg") no-repeat center center fixed;
+  padding:30px;
+  background:url("https://tranhnhatthanh.vn/wp-content/uploads/2024/07/tranh-lang-que-viet-nam-xua-14.jpg")
+             no-repeat center center fixed;
   background-size:cover;
 }
 
@@ -19,16 +20,16 @@ body{
   background:rgba(255,255,255,0.94);
   max-width:1200px;
   margin:auto;
-  padding:30px;
-  box-shadow:0 0 30px rgba(0,0,0,0.35);
+  padding:30px 40px;
+  box-shadow:0 0 30px rgba(0,0,0,0.4);
 }
 
 h1{text-align:center;margin-bottom:10px}
 
-.menu{text-align:center;margin-bottom:20px}
+.menu{text-align:center;margin-bottom:25px}
 .menu button{
   margin:0 6px;
-  padding:7px 16px;
+  padding:6px 16px;
   font-weight:bold;
   cursor:pointer;
 }
@@ -51,12 +52,12 @@ h1{text-align:center;margin-bottom:10px}
 
 #form{
   border:1px solid #ccc;
-  padding:12px;
+  padding:15px;
   background:#f9f9f9;
 }
 
-label{display:inline-block;width:140px}
-input,select{margin-bottom:6px;width:260px}
+label{display:inline-block;width:150px}
+input,select{margin-bottom:6px;width:280px}
 
 .wrapper{
   width:100%;
@@ -65,7 +66,7 @@ input,select{margin-bottom:6px;width:260px}
   border:1px solid #ccc;
 }
 
-svg{width:3400px;height:2400px}
+svg{width:3200px;height:2200px}
 
 .node rect{
   fill:#fff;
@@ -88,10 +89,10 @@ svg{width:3400px;height:2400px}
   <button onclick="showPage('tree')">🌳 Gia phả</button>
 </div>
 
-<!-- ========== TRANG CHỦ ========== -->
+<!-- ===== TRANG CHỦ ===== -->
 <div id="home" class="section active">
   <div class="intro">
-    <h2>LỜI GIỚI THIỆU</h2>
+    <h2 style="text-align:center">LỜI GIỚI THIỆU</h2>
 
     <p>Gia phả là sợi dây nối liền các thế hệ, là nơi lưu giữ cội nguồn, công đức tổ tiên và truyền thống của dòng họ qua bao đời.</p>
 
@@ -106,7 +107,7 @@ svg{width:3400px;height:2400px}
       <li>Kết nối con cháu trong và ngoài nước, dù ở bất cứ nơi đâu</li>
     </ul>
 
-    <p>Gia phả điện tử này được xây dựng trên tinh thần tôn trọng lịch sử – giữ gìn truyền thống – truyền lại cho mai sau. Mọi thông tin đều được Ban gia phả rà soát, bổ sung và cập nhật cẩn trọng.</p>
+    <p>Gia phả điện tử này được xây dựng trên tinh thần <b>tôn trọng lịch sử – giữ gìn truyền thống – truyền lại cho mai sau</b>. Mọi thông tin đều được Ban gia phả rà soát, bổ sung và cập nhật cẩn trọng.</p>
 
     <p>Nguyện mong con cháu đời sau, khi xem gia phả, luôn nhớ đến công lao tổ tiên, giữ gìn nề nếp gia phong, đoàn kết yêu thương, cùng nhau làm rạng danh dòng họ.</p>
 
@@ -116,7 +117,7 @@ svg{width:3400px;height:2400px}
   </div>
 </div>
 
-<!-- ========== QUẢN LÝ ========== -->
+<!-- ===== QUẢN LÝ ===== -->
 <div id="manage" class="section">
   <div id="form">
     <b>Thêm / cập nhật thành viên</b><br><br>
@@ -137,7 +138,7 @@ svg{width:3400px;height:2400px}
     <input id="homeInput"><br>
 
     <label>Ngày giỗ:</label>
-    <input id="deathInput"><br>
+    <input id="deathInput" placeholder="VD: 12/3 ÂL"><br>
 
     <label>Ảnh đại diện:</label>
     <input type="file" disabled title="Sẽ cập nhật sau"><br><br>
@@ -146,7 +147,7 @@ svg{width:3400px;height:2400px}
   </div>
 </div>
 
-<!-- ========== CÂY GIA PHẢ ========== -->
+<!-- ===== CÂY GIA PHẢ ===== -->
 <div id="tree" class="section">
   <div class="wrapper"><svg></svg></div>
 </div>
@@ -159,8 +160,7 @@ function showPage(id){
   document.getElementById(id).classList.add('active');
 }
 
-/* ===== DỮ LIỆU (LƯU LOCAL) ===== */
-let data = JSON.parse(localStorage.getItem("giapha")) || {
+let data={
   id:1,
   name:"Thủy Tổ – Lê Đình Cai",
   doi:1,
@@ -168,10 +168,7 @@ let data = JSON.parse(localStorage.getItem("giapha")) || {
   gio:"Giỗ Tổ: 17 tháng Giêng",
   children:[]
 };
-
-let idCounter = Date.now();
-
-function save(){ localStorage.setItem("giapha", JSON.stringify(data)); }
+let idCounter=2;
 
 function allNodes(n,a=[]){
   a.push(n);
@@ -191,6 +188,7 @@ function refreshSelect(){
 
 function addPerson(){
   let p=allNodes(data).find(n=>n.id==parentSelect.value);
+  if(!p.children)p.children=[];
   p.children.push({
     id:idCounter++,
     name:nameInput.value,
@@ -198,19 +196,17 @@ function addPerson(){
     order:orderInput.value,
     birth:birthInput.value,
     home:homeInput.value,
-    gio:deathInput.value,
-    children:[]
+    gio:deathInput.value
   });
-  save();
   nameInput.value=orderInput.value=birthInput.value=homeInput.value=deathInput.value="";
   refreshSelect(); draw();
 }
 
 function draw(){
   d3.select("svg").selectAll("*").remove();
-  let g=d3.select("svg").append("g").attr("transform","translate(160,420)");
+  let g=d3.select("svg").append("g").attr("transform","translate(150,400)");
   let root=d3.hierarchy(data);
-  d3.tree().nodeSize([110,280])(root);
+  d3.tree().nodeSize([100,260])(root);
 
   g.selectAll(".link")
     .data(root.links()).enter().append("path")
@@ -222,16 +218,16 @@ function draw(){
     .attr("class","node")
     .attr("transform",d=>`translate(${d.y},${d.x})`);
 
-  node.append("rect").attr("x",-110).attr("y",-50).attr("width",220).attr("height",100);
+  node.append("rect").attr("x",-100).attr("y",-45).attr("width",200).attr("height",90);
 
-  node.append("text").attr("y",-28).attr("text-anchor","middle").text(d=>d.data.name);
-  node.append("text").attr("y",-10).attr("text-anchor","middle").style("font-size","12px")
-    .text(d=>d.data.isRoot ? "Thủy Tổ" : "Đời "+d.data.doi+" – Con thứ "+d.data.order);
-  node.append("text").attr("y",6).attr("text-anchor","middle").style("font-size","11px")
+  node.append("text").attr("y",-22).attr("text-anchor","middle").text(d=>d.data.name);
+  node.append("text").attr("y",-6).attr("text-anchor","middle").style("font-size","12px")
+    .text(d=>d.data.isRoot?"Thủy Tổ":"Đời "+d.data.doi+" – Con thứ "+d.data.order);
+  node.append("text").attr("y",10).attr("text-anchor","middle").style("font-size","11px")
     .text(d=>d.data.birth||"");
-  node.append("text").attr("y",20).attr("text-anchor","middle").style("font-size","11px")
+  node.append("text").attr("y",24).attr("text-anchor","middle").style("font-size","11px")
     .text(d=>d.data.home||"");
-  node.append("text").attr("y",36).attr("text-anchor","middle").style("font-size","11px")
+  node.append("text").attr("y",38).attr("text-anchor","middle").style("font-size","11px")
     .text(d=>d.data.gio||"");
 }
 
