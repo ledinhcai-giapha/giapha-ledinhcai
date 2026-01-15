@@ -1,0 +1,21 @@
+{
+  "name": "Lê Đình Cai",
+  "title": "Thủy tổ",
+  "children": [
+    {
+      "name": "Con trai trưởng",
+      "title": "Đời 2",
+      "children": [
+        { "name": "Cháu A", "title": "Đời 3" },
+        { "name": "Cháu B", "title": "Đời 3" }
+      ]
+    },
+    {
+      "name": "Con trai thứ",
+      "title": "Đời 2",
+      "children": [
+        { "name": "Cháu C", "title": "Đời 3" }
+      ]
+    }
+  ]
+}
