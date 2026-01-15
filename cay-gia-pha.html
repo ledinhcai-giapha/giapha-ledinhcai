@@ -11,16 +11,15 @@ body{
   font-family:"Times New Roman",serif;
   margin:0;
   padding:20px;
-  background:url("https://images.unsplash.com/photo-1500530855697-b586d89ba3ee")
-             no-repeat center center fixed;
+  background:url("lang-que.jpg") no-repeat center center fixed;
   background-size:cover;
 }
 .main{
-  background:rgba(255,255,255,0.95);
+  background:rgba(255,255,255,0.96);
   max-width:1200px;
   margin:auto;
   padding:30px;
-  box-shadow:0 0 25px rgba(0,0,0,0.3);
+  box-shadow:0 0 25px rgba(0,0,0,0.35);
 }
 h1{text-align:center;margin-bottom:10px}
 .menu{text-align:center;margin-bottom:20px}
@@ -53,7 +52,7 @@ h1{text-align:center;margin-bottom:10px}
 }
 
 label{display:inline-block;width:140px}
-input,select{margin-bottom:6px;width:250px}
+input,select{margin-bottom:6px;width:260px}
 
 .wrapper{
   width:100%;
@@ -62,7 +61,7 @@ input,select{margin-bottom:6px;width:250px}
   border:1px solid #ccc;
 }
 
-svg{width:3200px;height:2200px}
+svg{width:3400px;height:2400px}
 
 .node rect{
   fill:#fff;
@@ -71,6 +70,14 @@ svg{width:3200px;height:2200px}
   rx:6; ry:6;
 }
 .link{fill:none;stroke:#999}
+
+.avatar{
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  object-fit:cover;
+  border:1px solid #666;
+}
 </style>
 </head>
 
@@ -103,11 +110,7 @@ svg{width:3200px;height:2200px}
       <li>Kết nối con cháu trong và ngoài nước, dù ở bất cứ nơi đâu</li>
     </ul>
 
-    <p>Gia phả điện tử này được xây dựng trên tinh thần tôn trọng lịch sử – giữ gìn truyền thống – truyền lại cho mai sau. Mọi thông tin đều được Ban gia phả rà soát, bổ sung và cập nhật cẩn trọng.</p>
-
-    <p>Nguyện mong con cháu đời sau, khi xem gia phả, luôn nhớ đến công lao tổ tiên, giữ gìn nề nếp gia phong, đoàn kết yêu thương, cùng nhau làm rạng danh dòng họ.</p>
-
-    <p>Gia phả này là tài sản chung của toàn thể dòng họ, được lưu giữ và sử dụng cho mục đích tưởng nhớ tổ tiên và giáo dục truyền thống cho các thế hệ mai sau.</p>
+    <p>Gia phả điện tử này được xây dựng trên tinh thần tôn trọng lịch sử – giữ gìn truyền thống – truyền lại cho mai sau.</p>
 
     <div class="footer">Ban Gia phả dòng họ Lê Đình</div>
   </div>
@@ -136,6 +139,9 @@ svg{width:3200px;height:2200px}
     <label>Ngày giỗ:</label>
     <input id="deathInput"><br>
 
+    <label>Ảnh đại diện:</label>
+    <input id="avatarInput" type="file" accept="image/*"><br>
+
     <button onclick="addPerson()">➕ Thêm người</button>
   </div>
 </div>
@@ -159,6 +165,7 @@ let data={
   doi:1,
   isRoot:true,
   gio:"Giỗ Tổ: 17 tháng Giêng",
+  avatar:"",
   children:[]
 };
 let idCounter=2;
@@ -182,24 +189,31 @@ function refreshSelect(){
 function addPerson(){
   let p=allNodes(data).find(n=>n.id==parentSelect.value);
   if(!p.children)p.children=[];
-  p.children.push({
-    id:idCounter++,
-    name:nameInput.value,
-    doi:p.doi+1,
-    order:orderInput.value,
-    birth:birthInput.value,
-    home:homeInput.value,
-    gio:deathInput.value
-  });
+  let file=avatarInput.files[0];
+  let reader=new FileReader();
+  reader.onload=function(){
+    p.children.push({
+      id:idCounter++,
+      name:nameInput.value,
+      doi:p.doi+1,
+      order:orderInput.value,
+      birth:birthInput.value,
+      home:homeInput.value,
+      gio:deathInput.value,
+      avatar:reader.result
+    });
+    refreshSelect(); draw();
+  };
+  if(file) reader.readAsDataURL(file);
+  else reader.onload();
   nameInput.value=orderInput.value=birthInput.value=homeInput.value=deathInput.value="";
-  refreshSelect(); draw();
 }
 
 function draw(){
   d3.select("svg").selectAll("*").remove();
   let g=d3.select("svg").append("g").attr("transform","translate(150,400)");
   let root=d3.hierarchy(data);
-  d3.tree().nodeSize([100,260])(root);
+  d3.tree().nodeSize([110,280])(root);
 
   g.selectAll(".link")
     .data(root.links()).enter().append("path")
@@ -211,16 +225,21 @@ function draw(){
     .attr("class","node")
     .attr("transform",d=>`translate(${d.y},${d.x})`);
 
-  node.append("rect").attr("x",-100).attr("y",-45).attr("width",200).attr("height",90);
+  node.append("rect").attr("x",-110).attr("y",-60).attr("width",220).attr("height",120);
 
-  node.append("text").attr("y",-22).attr("text-anchor","middle").text(d=>d.data.name);
-  node.append("text").attr("y",-6).attr("text-anchor","middle").style("font-size","12px")
+  node.append("image")
+    .attr("x",-20).attr("y",-55)
+    .attr("width",40).attr("height",40)
+    .attr("href",d=>d.data.avatar||"");
+
+  node.append("text").attr("y",-8).attr("text-anchor","middle").text(d=>d.data.name);
+  node.append("text").attr("y",8).attr("text-anchor","middle").style("font-size","12px")
     .text(d=>d.data.isRoot?"Thủy Tổ":"Đời "+d.data.doi+" – Con thứ "+d.data.order);
-  node.append("text").attr("y",10).attr("text-anchor","middle").style("font-size","11px")
-    .text(d=>d.data.birth||"");
   node.append("text").attr("y",24).attr("text-anchor","middle").style("font-size","11px")
-    .text(d=>d.data.home||"");
+    .text(d=>d.data.birth||"");
   node.append("text").attr("y",38).attr("text-anchor","middle").style("font-size","11px")
+    .text(d=>d.data.home||"");
+  node.append("text").attr("y",52).attr("text-anchor","middle").style("font-size","11px")
     .text(d=>d.data.gio||"");
 }
 
