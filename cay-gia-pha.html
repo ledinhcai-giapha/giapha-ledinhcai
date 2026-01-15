@@ -10,13 +10,23 @@
 body{
   font-family:"Times New Roman",serif;
   margin:0;
-  padding:10px;
+  padding:20px;
+  background:url("https://images.unsplash.com/photo-1500530855697-b586d89ba3ee")
+             no-repeat center center fixed;
+  background-size:cover;
 }
-h1{text-align:center;margin-bottom:5px}
-.menu{text-align:center;margin-bottom:15px}
+.main{
+  background:rgba(255,255,255,0.95);
+  max-width:1200px;
+  margin:auto;
+  padding:30px;
+  box-shadow:0 0 25px rgba(0,0,0,0.3);
+}
+h1{text-align:center;margin-bottom:10px}
+.menu{text-align:center;margin-bottom:20px}
 .menu button{
   margin:0 5px;
-  padding:6px 12px;
+  padding:6px 14px;
   font-weight:bold;
   cursor:pointer;
 }
@@ -25,8 +35,8 @@ h1{text-align:center;margin-bottom:5px}
 
 .intro{
   max-width:900px;
-  margin:0 auto;
-  line-height:1.8;
+  margin:auto;
+  line-height:1.9;
   font-size:18px;
 }
 
@@ -38,22 +48,21 @@ h1{text-align:center;margin-bottom:5px}
 
 #form{
   border:1px solid #ccc;
-  padding:10px;
-  margin-bottom:10px;
+  padding:12px;
   background:#f9f9f9;
 }
 
-label{display:inline-block;width:120px}
-input,select{margin-bottom:6px}
+label{display:inline-block;width:140px}
+input,select{margin-bottom:6px;width:250px}
 
 .wrapper{
   width:100%;
-  height:75vh;
+  height:70vh;
   overflow:auto;
   border:1px solid #ccc;
 }
 
-svg{width:3000px;height:2000px}
+svg{width:3200px;height:2200px}
 
 .node rect{
   fill:#fff;
@@ -66,6 +75,7 @@ svg{width:3000px;height:2000px}
 </head>
 
 <body>
+<div class="main">
 
 <h1>GIA PHẢ DÒNG HỌ LÊ ĐÌNH</h1>
 
@@ -75,7 +85,7 @@ svg{width:3000px;height:2000px}
   <button onclick="showPage('tree')">🌳 Gia phả</button>
 </div>
 
-<!-- ================= TRANG CHỦ ================= -->
+<!-- ===== TRANG CHỦ ===== -->
 <div id="home" class="section active">
   <div class="intro">
     <h2>LỜI GIỚI THIỆU</h2>
@@ -103,10 +113,10 @@ svg{width:3000px;height:2000px}
   </div>
 </div>
 
-<!-- ================= QUẢN LÝ ================= -->
+<!-- ===== QUẢN LÝ ===== -->
 <div id="manage" class="section">
   <div id="form">
-    <div><b>Thêm / cập nhật nhân vật</b></div><br>
+    <b>Thêm thành viên</b><br><br>
 
     <label>Cha:</label>
     <select id="parentSelect"></select><br>
@@ -114,21 +124,27 @@ svg{width:3000px;height:2000px}
     <label>Tên:</label>
     <input id="nameInput"><br>
 
-    <label>Thứ tự con:</label>
+    <label>Con thứ mấy:</label>
     <input id="orderInput" type="number" min="1"><br>
 
+    <label>Năm sinh:</label>
+    <input id="birthInput"><br>
+
+    <label>Quê quán:</label>
+    <input id="homeInput"><br>
+
     <label>Ngày giỗ:</label>
-    <input id="deathInput" placeholder="VD: 12/3 ÂL"><br>
+    <input id="deathInput"><br>
 
     <button onclick="addPerson()">➕ Thêm người</button>
   </div>
 </div>
 
-<!-- ================= CÂY GIA PHẢ ================= -->
+<!-- ===== CÂY ===== -->
 <div id="tree" class="section">
-  <div class="wrapper">
-    <svg></svg>
-  </div>
+  <div class="wrapper"><svg></svg></div>
+</div>
+
 </div>
 
 <script>
@@ -137,10 +153,9 @@ function showPage(id){
   document.getElementById(id).classList.add('active');
 }
 
-/* ===== DATA ===== */
 let data={
   id:1,
-  name:"Thủy Tổ – Lê Đình Cai",
+  name:"Lê Đình Cai",
   doi:1,
   isRoot:true,
   gio:"Giỗ Tổ: 17 tháng Giêng",
@@ -172,9 +187,11 @@ function addPerson(){
     name:nameInput.value,
     doi:p.doi+1,
     order:orderInput.value,
+    birth:birthInput.value,
+    home:homeInput.value,
     gio:deathInput.value
   });
-  nameInput.value="";orderInput.value="";deathInput.value="";
+  nameInput.value=orderInput.value=birthInput.value=homeInput.value=deathInput.value="";
   refreshSelect(); draw();
 }
 
@@ -182,35 +199,29 @@ function draw(){
   d3.select("svg").selectAll("*").remove();
   let g=d3.select("svg").append("g").attr("transform","translate(150,400)");
   let root=d3.hierarchy(data);
-  d3.tree().nodeSize([90,240])(root);
+  d3.tree().nodeSize([100,260])(root);
 
   g.selectAll(".link")
-    .data(root.links())
-    .enter().append("path")
+    .data(root.links()).enter().append("path")
     .attr("class","link")
     .attr("d",d3.linkHorizontal().x(d=>d.y).y(d=>d.x));
 
   let node=g.selectAll(".node")
-    .data(root.descendants())
-    .enter().append("g")
+    .data(root.descendants()).enter().append("g")
     .attr("class","node")
     .attr("transform",d=>`translate(${d.y},${d.x})`);
 
-  node.append("rect").attr("x",-90).attr("y",-35).attr("width",180).attr("height",70);
+  node.append("rect").attr("x",-100).attr("y",-45).attr("width",200).attr("height",90);
 
-  node.append("text")
-    .attr("y",-10).attr("text-anchor","middle")
-    .text(d=>d.data.name);
-
-  node.append("text")
-    .attr("y",10).attr("text-anchor","middle")
-    .style("font-size","12px")
-    .text(d=>d.data.isRoot ? "Thủy Tổ" : ("Đời "+d.data.doi+" – Con thứ "+d.data.order));
-
-  node.append("text")
-    .attr("y",26).attr("text-anchor","middle")
-    .style("font-size","11px")
-    .text(d=>d.data.gio || "");
+  node.append("text").attr("y",-22).attr("text-anchor","middle").text(d=>d.data.name);
+  node.append("text").attr("y",-6).attr("text-anchor","middle").style("font-size","12px")
+    .text(d=>d.data.isRoot?"Thủy Tổ":"Đời "+d.data.doi+" – Con thứ "+d.data.order);
+  node.append("text").attr("y",10).attr("text-anchor","middle").style("font-size","11px")
+    .text(d=>d.data.birth||"");
+  node.append("text").attr("y",24).attr("text-anchor","middle").style("font-size","11px")
+    .text(d=>d.data.home||"");
+  node.append("text").attr("y",38).attr("text-anchor","middle").style("font-size","11px")
+    .text(d=>d.data.gio||"");
 }
 
 refreshSelect();
