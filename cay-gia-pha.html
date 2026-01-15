@@ -11,10 +11,8 @@ body{
   font-family:"Times New Roman",serif;
   margin:0;
   padding:30px;
-  background-image:url("https://tranhnhatthanh.vn/wp-content/uploads/2024/07/tranh-lang-que-viet-nam-xua-14.jpg");
-  background-repeat:no-repeat;
-  background-position:center center;
-  background-attachment:fixed;
+  background:url("https://tranhnhatthanh.vn/wp-content/uploads/2024/07/tranh-lang-que-viet-nam-xua-14.jpg")
+  no-repeat center center fixed;
   background-size:cover;
 }
 .main{
@@ -26,55 +24,41 @@ body{
 }
 h1{text-align:center}
 .menu{text-align:center;margin:20px 0}
-.menu button{margin:0 6px;padding:6px 16px;font-weight:bold;cursor:pointer}
+.menu button{padding:6px 16px;font-weight:bold;cursor:pointer}
 .section{display:none}
 .section.active{display:block}
-.intro{max-width:900px;margin:auto;line-height:1.9;font-size:18px}
-.footer{margin-top:40px;text-align:right;font-weight:bold}
-#form{border:1px solid #ccc;padding:15px;background:#f9f9f9}
-label{display:inline-block;width:160px}
-input,select{margin-bottom:6px;width:280px}
-.wrapper{width:100%;height:70vh;overflow:auto;border:1px solid #ccc}
-svg{width:3200px;height:2200px}
-.node rect{fill:#fff;stroke:#333;stroke-width:1.2px;rx:6;ry:6}
+label{display:inline-block;width:180px}
+input,select{width:280px;margin-bottom:6px}
+.wrapper{height:70vh;border:1px solid #ccc;overflow:auto}
+svg{width:3000px;height:2000px}
+.node rect{fill:#fff;stroke:#333;rx:6;ry:6}
 .link{fill:none;stroke:#999}
 </style>
 </head>
 
 <body>
 <div class="main">
+
 <h1>GIA PHẢ DÒNG HỌ LÊ ĐÌNH</h1>
 
 <div class="menu">
-  <button onclick="showPage('home')">🏠 Trang chủ</button>
-  <button onclick="showPage('manage')">✏️ Quản lý gia phả</button>
-  <button onclick="showPage('tree')">🌳 Gia phả</button>
+<button onclick="show('home')">🏠 Trang chủ</button>
+<button onclick="show('manage')">✏️ Quản lý</button>
+<button onclick="show('tree')">🌳 Gia phả</button>
 </div>
 
-<!-- ===== TRANG CHỦ ===== -->
 <div id="home" class="section active">
-<div class="intro">
 <h2 style="text-align:center">LỜI GIỚI THIỆU</h2>
 <p>Gia phả là sợi dây nối liền các thế hệ, là nơi lưu giữ cội nguồn, công đức tổ tiên và truyền thống của dòng họ qua bao đời.</p>
-<p>Dòng họ Lê chúng ta lấy <b>Thủy tổ là Cụ Lê Đình Cai</b>, con trai của <b>Hoàng thân Lê Duy Mật</b>, làm gốc. Từ Thủy tổ, các đời con cháu tiếp nối sinh sôi, lập nghiệp, đóng góp cho gia đình, quê hương và đất nước.</p>
-<p>Trải qua thời gian, nhiều tư liệu gia phả bằng giấy đã mai một. Việc xây dựng Gia phả điện tử nhằm:</p>
-<ul>
-<li>Gìn giữ đầy đủ, chính xác thông tin các thế hệ</li>
-<li>Giúp con cháu tra cứu cội nguồn, vai vế</li>
-<li>Thuận tiện giỗ tổ, giỗ chi</li>
-<li>Kết nối con cháu khắp nơi</li>
-</ul>
-<p>Gia phả này là tài sản chung của toàn thể dòng họ.</p>
-<div class="footer">Ban Gia phả dòng họ Lê Đình</div>
-</div>
+<p>Dòng họ Lê chúng ta lấy <b>Thủy tổ là Cụ Lê Đình Cai</b>, con trai của <b>Hoàng thân Lê Duy Mật</b>, làm gốc.</p>
+<p>Gia phả điện tử được lập để gìn giữ – kết nối – truyền lại cho mai sau.</p>
+<p style="text-align:right;font-weight:bold">Ban Gia phả dòng họ Lê Đình</p>
 </div>
 
-<!-- ===== QUẢN LÝ ===== -->
 <div id="manage" class="section">
-<div id="form">
 <b>Thêm / chỉnh sửa thành viên</b><br><br>
 
-<label>Người cần sửa:</label>
+<label>Thành viên đang chọn:</label>
 <select id="editSelect" onchange="loadPerson()"></select><br>
 
 <label>Cha (để sinh con):</label>
@@ -98,50 +82,37 @@ svg{width:3200px;height:2200px}
 <button onclick="addPerson()">➕ Thêm người</button>
 <button onclick="updatePerson()">✏️ Cập nhật</button>
 </div>
-</div>
 
-<!-- ===== CÂY ===== -->
 <div id="tree" class="section">
 <div class="wrapper"><svg></svg></div>
 </div>
+
 </div>
 
 <script>
-function showPage(id){
+function show(id){
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
 
 let data={
-  id:1,
-  name:"Thủy Tổ – Lê Đình Cai",
-  doi:1,
-  gio:"Giỗ Tổ: 17 tháng Giêng",
-  children:[]
+  id:1,name:"Thủy Tổ – Lê Đình Cai",doi:1,gio:"Giỗ Tổ: 17 tháng Giêng",children:[]
 };
-let idCounter=2;
-let editingId=1;
+let idCounter=2, editingId=1;
 
-function allNodes(n,a=[]){
-  a.push(n);
-  (n.children||[]).forEach(c=>allNodes(c,a));
-  return a;
-}
+function all(n,a=[]){a.push(n);(n.children||[]).forEach(c=>all(c,a));return a;}
 
-function refreshSelects(){
-  editSelect.innerHTML="";
-  parentSelect.innerHTML="";
-  allNodes(data).forEach(n=>{
-    editSelect.innerHTML+=`<option value="${n.id}">${n.name}</option>`;
-    parentSelect.innerHTML+=`<option value="${n.id}">${n.name} (Đời ${n.doi})</option>`;
+function refresh(){
+  parentSelect.innerHTML=editSelect.innerHTML="";
+  all(data).forEach(n=>{
+    parentSelect.add(new Option(n.name+" (Đời "+n.doi+")",n.id));
+    editSelect.add(new Option(n.name,n.id));
   });
-  editSelect.value=editingId;
 }
 
 function loadPerson(){
-  editingId=Number(editSelect.value);
-  let p=allNodes(data).find(n=>n.id===editingId);
-  if(!p)return;
+  editingId=+editSelect.value;
+  let p=all(data).find(n=>n.id===editingId);
   nameInput.value=p.name.replace("Thủy Tổ – ","");
   orderInput.value=p.order||"";
   birthInput.value=p.birth||"";
@@ -149,54 +120,51 @@ function loadPerson(){
   deathInput.value=p.gio||"";
 }
 
+function clear(){
+  nameInput.value=orderInput.value=birthInput.value=homeInput.value=deathInput.value="";
+}
+
 function addPerson(){
-  let parent=allNodes(data).find(n=>n.id==parentSelect.value);
+  if(!nameInput.value){alert("Chưa nhập họ tên");return;}
+  let parent=all(data).find(n=>n.id==parentSelect.value);
   parent.children.push({
-    id:idCounter++,
-    name:nameInput.value,
-    doi:parent.doi+1,
-    order:orderInput.value,
-    birth:birthInput.value,
-    home:homeInput.value,
-    gio:deathInput.value
+    id:idCounter++,name:nameInput.value,
+    doi:parent.doi+1,order:orderInput.value,
+    birth:birthInput.value,home:homeInput.value,gio:deathInput.value
   });
-  refreshSelects();draw();
+  clear(); refresh(); draw();
 }
 
 function updatePerson(){
-  if(editingId===1){alert("Không sửa Thủy Tổ");return;}
-  let p=allNodes(data).find(n=>n.id===editingId);
-  p.name=nameInput.value;
-  p.order=orderInput.value;
-  p.birth=birthInput.value;
-  p.home=homeInput.value;
-  p.gio=deathInput.value;
+  if(editingId===1){alert("Không chỉnh sửa Thủy Tổ");return;}
+  let p=all(data).find(n=>n.id===editingId);
+  p.name=nameInput.value;p.order=orderInput.value;
+  p.birth=birthInput.value;p.home=homeInput.value;p.gio=deathInput.value;
   alert("Đã cập nhật");
-  refreshSelects();draw();
+  clear(); refresh(); draw();
 }
 
 function draw(){
   d3.select("svg").selectAll("*").remove();
-  let g=d3.select("svg").append("g").attr("transform","translate(150,400)");
+  let g=d3.select("svg").append("g").attr("transform","translate(150,300)");
   let root=d3.hierarchy(data);
   d3.tree().nodeSize([100,260])(root);
 
-  g.selectAll(".link").data(root.links()).enter()
-  .append("path").attr("class","link")
-  .attr("d",d3.linkHorizontal().x(d=>d.y).y(d=>d.x));
+  g.selectAll(".link").data(root.links()).enter().append("path")
+    .attr("class","link")
+    .attr("d",d3.linkHorizontal().x(d=>d.y).y(d=>d.x));
 
-  let node=g.selectAll(".node").data(root.descendants()).enter()
-  .append("g").attr("class","node")
-  .attr("transform",d=>`translate(${d.y},${d.x})`);
+  let node=g.selectAll(".node").data(root.descendants()).enter().append("g")
+    .attr("class","node").attr("transform",d=>`translate(${d.y},${d.x})`);
 
   node.append("rect").attr("x",-100).attr("y",-45).attr("width",200).attr("height",90);
-  node.append("text").attr("y",-22).attr("text-anchor","middle").text(d=>d.data.name);
-  node.append("text").attr("y",-6).attr("text-anchor","middle")
-  .text(d=>d.data.id===1?"Thủy Tổ":"Đời "+d.data.doi+" – Con "+d.data.order);
+  node.append("text").attr("y",-20).attr("text-anchor","middle").text(d=>d.data.name);
+  node.append("text").attr("y",-5).attr("text-anchor","middle")
+    .text(d=>d.data.id===1?"Thủy Tổ":"Đời "+d.data.doi+" – Con thứ "+d.data.order);
+  node.append("text").attr("y",15).attr("text-anchor","middle").text(d=>d.data.gio||"");
 }
 
-refreshSelects();
-draw();
+refresh(); draw();
 </script>
 </body>
 </html>
