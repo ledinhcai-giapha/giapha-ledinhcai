@@ -60,6 +60,11 @@ svg {
   ry: 6;
 }
 
+.node.selected rect {
+  stroke: #d00;
+  stroke-width: 2px;
+}
+
 .name {
   font-size: 13px;
   font-weight: bold;
@@ -82,10 +87,14 @@ svg {
   <label>Cha:</label>
   <select id="parentSelect"></select><br>
 
-  <label>Tên con:</label>
-  <input id="nameInput" placeholder="Ví dụ: Cháu B"><br>
+  <label>Tên:</label>
+  <input id="nameInput" placeholder="Ví dụ: Lê Đình Huy"><br>
+
+  <label>Thứ tự:</label>
+  <input id="thuTuInput" type="number" min="1" placeholder="1 = trưởng"><br>
 
   <button onclick="addPerson()">➕ Thêm người</button>
+  <button onclick="updatePerson()">✏️ Cập nhật</button>
 </div>
 
 <div class="wrapper">
@@ -98,10 +107,12 @@ let data = {
   id: 1,
   name: "Lê Đình Cai",
   doi: 1,
+  thuTu: null,
   children: []
 };
 
 let idCounter = 2;
+let selectedNode = null;
 
 /* ========= TIỆN ÍCH ========= */
 function getAllNodes(node, arr = []) {
@@ -128,22 +139,42 @@ function refreshSelect() {
 function addPerson() {
   const parentId = Number(parentSelect.value);
   const name = nameInput.value.trim();
+  const thuTu = thuTuInput.value ? Number(thuTuInput.value) : null;
+
   if (!name) return alert("Nhập tên!");
 
-  const nodes = getAllNodes(data);
-  const parent = nodes.find(n => n.id === parentId);
-
+  const parent = getAllNodes(data).find(n => n.id === parentId);
   if (!parent.children) parent.children = [];
 
   parent.children.push({
     id: idCounter++,
     name,
     doi: parent.doi + 1,
+    thuTu,
     children: []
   });
 
   nameInput.value = "";
+  thuTuInput.value = "";
   refreshSelect();
+  draw();
+}
+
+/* ========= CẬP NHẬT ========= */
+function updatePerson() {
+  if (!selectedNode) {
+    alert("Chưa chọn người để sửa (click vào ô trên cây)");
+    return;
+  }
+
+  const name = nameInput.value.trim();
+  const thuTu = thuTuInput.value ? Number(thuTuInput.value) : null;
+
+  if (!name) return alert("Tên không được trống!");
+
+  selectedNode.data.name = name;
+  selectedNode.data.thuTu = thuTu;
+
   draw();
 }
 
@@ -173,8 +204,14 @@ function draw() {
     .data(root.descendants())
     .enter()
     .append("g")
-    .attr("class", "node")
-    .attr("transform", d => `translate(${d.y},${d.x})`);
+    .attr("class", d => d === selectedNode ? "node selected" : "node")
+    .attr("transform", d => `translate(${d.y},${d.x})`)
+    .on("click", (e, d) => {
+      selectedNode = d;
+      nameInput.value = d.data.name;
+      thuTuInput.value = d.data.thuTu || "";
+      draw();
+    });
 
   node.append("rect")
     .attr("x", -70)
@@ -190,7 +227,11 @@ function draw() {
   node.append("text")
     .attr("class", "doi")
     .attr("y", 14)
-    .text(d => "Đời " + d.data.doi);
+    .text(d => {
+      if (d.data.thuTu)
+        return `Con thứ ${d.data.thuTu} – Đời ${d.data.doi}`;
+      return `Đời ${d.data.doi}`;
+    });
 }
 
 /* ========= KHỞI TẠO ========= */
