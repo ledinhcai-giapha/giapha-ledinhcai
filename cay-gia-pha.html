@@ -12,9 +12,9 @@ body{
   margin:0;
   padding:30px;
   background:url("https://tranhnhatthanh.vn/wp-content/uploads/2024/07/tranh-lang-que-viet-nam-xua-14.jpg")
-    no-repeat center center fixed;
-  background-size:cover;
+  no-repeat center/cover fixed;
 }
+
 .main{
   background:rgba(255,255,255,0.95);
   max-width:1200px;
@@ -22,64 +22,69 @@ body{
   padding:30px 40px;
   box-shadow:0 0 30px rgba(0,0,0,0.4);
 }
-h1{text-align:center}
+
 .menu{text-align:center;margin:20px 0}
-.menu button{padding:6px 16px;font-weight:bold;cursor:pointer}
+.menu button{padding:6px 16px;font-weight:bold}
+
 .section{display:none}
 .section.active{display:block}
-label{display:inline-block;width:170px}
+
+label{display:inline-block;width:160px}
 input,select{width:280px;margin-bottom:6px}
-#form{border:1px solid #ccc;padding:15px;background:#f9f9f9}
-.wrapper{height:70vh;overflow:auto;border:1px solid #ccc}
-svg{width:3200px;height:2200px}
-.node rect{fill:#fff;stroke:#333;rx:6;ry:6}
-.link{fill:none;stroke:#999}
+
+.wrapper{height:70vh;border:1px solid #ccc;overflow:auto}
+svg{width:3500px;height:2500px}
+
+.node rect{fill:#fff;stroke:#333;rx:6}
+.link{fill:none;stroke:#888}
 </style>
 </head>
 
 <body>
 <div class="main">
 
-<h1>GIA PHẢ DÒNG HỌ LÊ ĐÌNH</h1>
+<h1 style="text-align:center">GIA PHẢ DÒNG HỌ LÊ ĐÌNH</h1>
 
 <div class="menu">
-  <button onclick="showPage('home')">🏠 Trang chủ</button>
-  <button onclick="showPage('manage')">✏️ Quản lý</button>
-  <button onclick="showPage('tree')">🌳 Gia phả</button>
+  <button onclick="show('home')">🏠 Trang chủ</button>
+  <button onclick="show('manage')">✏️ Quản lý</button>
+  <button onclick="show('tree')">🌳 Gia phả</button>
 </div>
 
-<!-- TRANG CHỦ -->
+<!-- ================= HOME ================= -->
 <div id="home" class="section active">
   <h2 style="text-align:center">LỜI GIỚI THIỆU</h2>
   <p>Gia phả là sợi dây nối liền các thế hệ, là nơi lưu giữ cội nguồn, công đức tổ tiên và truyền thống của dòng họ qua bao đời.</p>
-  <p>Dòng họ Lê lấy <b>Thủy tổ Cụ Lê Đình Cai</b>, con trai Hoàng thân <b>Lê Duy Mật</b>, làm gốc.</p>
-  <p>Gia phả điện tử này nhằm gìn giữ truyền thống – kết nối con cháu – truyền lại cho mai sau.</p>
-  <div style="text-align:right;font-weight:bold">Ban Gia phả dòng họ Lê Đình</div>
+  <p>Dòng họ Lê lấy <b>Thủy Tổ – Cụ Lê Đình Cai</b>, con trai Hoàng thân Lê Duy Mật làm gốc.</p>
 </div>
 
-<!-- QUẢN LÝ -->
+<!-- ================= MANAGE ================= -->
 <div id="manage" class="section">
-<div id="form">
-<b>Thêm / chỉnh sửa thành viên</b><br><br>
+<h3>Thêm / chỉnh sửa thành viên</h3>
 
-<label>Thành viên đang chọn:</label>
-<select id="editSelect" onchange="loadPerson()"></select><br>
-
-<label>Cha (để sinh con):</label>
+<label>Chọn CHA:</label>
 <select id="parentSelect"></select><br>
 
-<label>Họ tên:</label><input id="nameInput"><br>
-<label>Con thứ mấy:</label><input id="orderInput" type="number"><br>
-<label>Năm sinh:</label><input id="birthInput"><br>
-<label>Quê quán:</label><input id="homeInput"><br>
-<label>Ngày giỗ:</label><input id="deathInput"><br><br>
+<label>Họ tên:</label>
+<input id="nameInput"><br>
 
-<button onclick="addPerson()">➕ Thêm người</button>
-<button onclick="updatePerson()">✏️ Cập nhật</button>
-</div>
+<label>Con thứ mấy:</label>
+<input id="orderInput" type="number" min="1"><br>
+
+<label>Năm sinh:</label>
+<input id="birthInput"><br>
+
+<label>Quê quán:</label>
+<input id="homeInput"><br>
+
+<label>Ngày giỗ:</label>
+<input id="deathInput"><br><br>
+
+<button onclick="add()">➕ Thêm người</button>
+<button onclick="update()">✏️ Cập nhật</button>
 </div>
 
-<!-- CÂY -->
+<!-- ================= TREE ================= -->
 <div id="tree" class="section">
 <div class="wrapper"><svg></svg></div>
 </div>
@@ -87,86 +92,117 @@ svg{width:3200px;height:2200px}
 </div>
 
 <script>
-function showPage(id){
- document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
- document.getElementById(id).classList.add('active');
+function show(id){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
 }
 
-let data={
- id:1,name:"Thủy Tổ – Lê Đình Cai",doi:1,gio:"Giỗ Tổ: 17 tháng Giêng",children:[]
+/* ===== DATA ===== */
+let idGen=1;
+const data={
+  id:idGen++,
+  name:"Thủy Tổ – Lê Đình Cai",
+  doi:1,
+  gio:"Giỗ Tổ: 17 tháng Giêng",
+  children:[]
 };
-let idCounter=2,editingId=null;
 
-function allNodes(n,a=[]){a.push(n);(n.children||[]).forEach(c=>allNodes(c,a));return a;}
+let selectedNode=null;
 
+function nodes(root,arr=[]){
+  arr.push(root);
+  (root.children||[]).forEach(c=>nodes(c,arr));
+  return arr;
+}
+
+/* ===== DROPDOWN ===== */
 function refresh(){
- parentSelect.innerHTML="";editSelect.innerHTML="";
- allNodes(data).forEach(n=>{
-  parentSelect.add(new Option(n.name+" (Đời "+n.doi+")",n.id));
-  editSelect.add(new Option(n.name,n.id));
- });
+  parentSelect.innerHTML="";
+  nodes(data).forEach(n=>{
+    let o=document.createElement("option");
+    o.value=n.id;
+    o.text=n.name+" (Đời "+n.doi+")";
+    parentSelect.appendChild(o);
+  });
 }
 
-function clearForm(){
- nameInput.value=orderInput.value=birthInput.value=homeInput.value=deathInput.value="";
- editingId=null;
+/* ===== ADD ===== */
+function add(){
+  let parent=nodes(data).find(n=>n.id==parentSelect.value);
+  if(!parent.children) parent.children=[];
+
+  parent.children.push({
+    id:idGen++,
+    name:nameInput.value,
+    doi:parent.doi+1,
+    order:orderInput.value,
+    birth:birthInput.value,
+    home:homeInput.value,
+    gio:deathInput.value,
+    children:[]
+  });
+
+  clear();
+  refresh();
+  draw();
 }
 
-function loadPerson(){
- editingId=Number(editSelect.value);
- let p=allNodes(data).find(n=>n.id===editingId);
- if(!p) return;
- nameInput.value=p.name.replace("Thủy Tổ – ","");
- orderInput.value=p.order||"";
- birthInput.value=p.birth||"";
- homeInput.value=p.home||"";
- deathInput.value=p.gio||"";
+/* ===== UPDATE (sửa người đang chọn trên cây) ===== */
+function update(){
+  if(!selectedNode){alert("Bấm vào người trên cây để sửa");return;}
+  if(selectedNode.id===data.id){alert("Không sửa Thủy Tổ");return;}
+
+  selectedNode.name=nameInput.value;
+  selectedNode.order=orderInput.value;
+  selectedNode.birth=birthInput.value;
+  selectedNode.home=homeInput.value;
+  selectedNode.gio=deathInput.value;
+
+  clear();
+  draw();
 }
 
-function addPerson(){
- let parent=allNodes(data).find(n=>n.id==parentSelect.value);
- if(!parent.children) parent.children=[];
- parent.children.push({
-  id:idCounter++,name:nameInput.value,doi:parent.doi+1,
-  order:orderInput.value,birth:birthInput.value,
-  home:homeInput.value,gio:deathInput.value,children:[]
- });
- clearForm();refresh();draw();
+/* ===== CLEAR ===== */
+function clear(){
+  nameInput.value=orderInput.value=birthInput.value=homeInput.value=deathInput.value="";
 }
 
-function updatePerson(){
- if(!editingId){alert("Chưa chọn người để cập nhật");return;}
- if(editingId===1){alert("Không chỉnh sửa Thủy Tổ");return;}
- let p=allNodes(data).find(n=>n.id===editingId);
- if(!p) return;
- p.name=nameInput.value;p.order=orderInput.value;
- p.birth=birthInput.value;p.home=homeInput.value;p.gio=deathInput.value;
- clearForm();refresh();draw();
-}
-
+/* ===== DRAW TREE ===== */
 function draw(){
- d3.select("svg").selectAll("*").remove();
- let g=d3.select("svg").append("g").attr("transform","translate(150,400)");
- let root=d3.hierarchy(data);
- d3.tree().nodeSize([100,260])(root);
+  d3.select("svg").selectAll("*").remove();
+  let g=d3.select("svg").append("g").attr("transform","translate(150,300)");
+  let root=d3.hierarchy(data);
+  d3.tree().nodeSize([100,260])(root);
 
- g.selectAll(".link").data(root.links()).enter().append("path")
-  .attr("class","link")
-  .attr("d",d3.linkHorizontal().x(d=>d.y).y(d=>d.x));
+  g.selectAll(".link")
+    .data(root.links()).enter().append("path")
+    .attr("class","link")
+    .attr("d",d3.linkHorizontal().x(d=>d.y).y(d=>d.x));
 
- let node=g.selectAll(".node").data(root.descendants()).enter()
-  .append("g").attr("class","node")
-  .attr("transform",d=>`translate(${d.y},${d.x})`);
+  let node=g.selectAll(".node")
+    .data(root.descendants()).enter().append("g")
+    .attr("class","node")
+    .attr("transform",d=>`translate(${d.y},${d.x})`)
+    .on("click",(e,d)=>{
+      selectedNode=d.data;
+      nameInput.value=d.data.name;
+      orderInput.value=d.data.order||"";
+      birthInput.value=d.data.birth||"";
+      homeInput.value=d.data.home||"";
+      deathInput.value=d.data.gio||"";
+      show('manage');
+    });
 
- node.append("rect").attr("x",-100).attr("y",-45).attr("width",200).attr("height",90);
- node.append("text").attr("y",-20).attr("text-anchor","middle").text(d=>d.data.name);
- node.append("text").attr("y",-5).attr("text-anchor","middle")
-  .text(d=>d.data.id===1?"Thủy Tổ":"Đời "+d.data.doi+" – Con thứ "+d.data.order);
- node.append("text").attr("y",15).attr("text-anchor","middle").text(d=>d.data.birth||"");
- node.append("text").attr("y",30).attr("text-anchor","middle").text(d=>d.data.gio||"");
+  node.append("rect").attr("x",-100).attr("y",-40).attr("width",200).attr("height",80);
+  node.append("text").attr("y",-10).attr("text-anchor","middle").text(d=>d.data.name);
+  node.append("text").attr("y",10).attr("text-anchor","middle")
+    .style("font-size","12px")
+    .text(d=>d.data.id===data.id?"Thủy Tổ":"Đời "+d.data.doi+" – Con "+d.data.order);
 }
 
-refresh();draw();
+refresh();
+draw();
 </script>
+
 </body>
 </html>
