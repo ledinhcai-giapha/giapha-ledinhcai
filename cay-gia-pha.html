@@ -11,17 +11,21 @@ body{
   font-family:"Times New Roman",serif;
   margin:0;
   padding:30px;
-  background:url("https://tranhnhatthanh.vn/wp-content/uploads/2024/07/tranh-lang-que-viet-nam-xua-14.jpg")
-             no-repeat center center fixed;
-  background-size:cover;
+
+  /* ẢNH NỀN LÀNG QUÊ VIỆT NAM XƯA */
+  background-image: url("https://tranhnhatthanh.vn/wp-content/uploads/2024/07/tranh-lang-que-viet-nam-xua-14.jpg");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-attachment: fixed;
+  background-size: cover;
 }
 
 .main{
-  background:rgba(255,255,255,0.94);
-  max-width:1200px;
-  margin:auto;
-  padding:30px 40px;
-  box-shadow:0 0 30px rgba(0,0,0,0.4);
+  background: rgba(255,255,255,0.94);
+  max-width: 1200px;
+  margin: auto;
+  padding: 30px 40px;
+  box-shadow: 0 0 30px rgba(0,0,0,0.4);
 }
 
 h1{text-align:center;margin-bottom:10px}
@@ -218,16 +222,32 @@ function draw(){
     .attr("class","node")
     .attr("transform",d=>`translate(${d.y},${d.x})`);
 
-  node.append("rect").attr("x",-100).attr("y",-45).attr("width",200).attr("height",90);
+  node.append("rect")
+    .attr("x",-100).attr("y",-45)
+    .attr("width",200).attr("height",90);
 
-  node.append("text").attr("y",-22).attr("text-anchor","middle").text(d=>d.data.name);
-  node.append("text").attr("y",-6).attr("text-anchor","middle").style("font-size","12px")
-    .text(d=>d.data.isRoot?"Thủy Tổ":"Đời "+d.data.doi+" – Con thứ "+d.data.order);
-  node.append("text").attr("y",10).attr("text-anchor","middle").style("font-size","11px")
+  node.append("text")
+    .attr("y",-22).attr("text-anchor","middle")
+    .text(d=>d.data.name);
+
+  node.append("text")
+    .attr("y",-6).attr("text-anchor","middle")
+    .style("font-size","12px")
+    .text(d=>d.data.isRoot ? "Thủy Tổ" : "Đời "+d.data.doi+" – Con thứ "+d.data.order);
+
+  node.append("text")
+    .attr("y",10).attr("text-anchor","middle")
+    .style("font-size","11px")
     .text(d=>d.data.birth||"");
-  node.append("text").attr("y",24).attr("text-anchor","middle").style("font-size","11px")
+
+  node.append("text")
+    .attr("y",24).attr("text-anchor","middle")
+    .style("font-size","11px")
     .text(d=>d.data.home||"");
-  node.append("text").attr("y",38).attr("text-anchor","middle").style("font-size","11px")
+
+  node.append("text")
+    .attr("y",38).attr("text-anchor","middle")
+    .style("font-size","11px")
     .text(d=>d.data.gio||"");
 }
 
