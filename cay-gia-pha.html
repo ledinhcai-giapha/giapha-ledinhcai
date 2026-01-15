@@ -11,24 +11,28 @@ body{
   font-family:"Times New Roman",serif;
   margin:0;
   padding:20px;
-  background:url("lang-que.jpg") no-repeat center center fixed;
+  background:url("https://i.imgur.com/9cZ8F1Q.jpg") no-repeat center center fixed;
   background-size:cover;
 }
+
 .main{
-  background:rgba(255,255,255,0.96);
+  background:rgba(255,255,255,0.94);
   max-width:1200px;
   margin:auto;
   padding:30px;
-  box-shadow:0 0 25px rgba(0,0,0,0.35);
+  box-shadow:0 0 30px rgba(0,0,0,0.35);
 }
+
 h1{text-align:center;margin-bottom:10px}
+
 .menu{text-align:center;margin-bottom:20px}
 .menu button{
-  margin:0 5px;
-  padding:6px 14px;
+  margin:0 6px;
+  padding:7px 16px;
   font-weight:bold;
   cursor:pointer;
 }
+
 .section{display:none}
 .section.active{display:block}
 
@@ -70,14 +74,6 @@ svg{width:3400px;height:2400px}
   rx:6; ry:6;
 }
 .link{fill:none;stroke:#999}
-
-.avatar{
-  width:40px;
-  height:40px;
-  border-radius:50%;
-  object-fit:cover;
-  border:1px solid #666;
-}
 </style>
 </head>
 
@@ -92,14 +88,14 @@ svg{width:3400px;height:2400px}
   <button onclick="showPage('tree')">🌳 Gia phả</button>
 </div>
 
-<!-- ===== TRANG CHỦ ===== -->
+<!-- ========== TRANG CHỦ ========== -->
 <div id="home" class="section active">
   <div class="intro">
     <h2>LỜI GIỚI THIỆU</h2>
 
     <p>Gia phả là sợi dây nối liền các thế hệ, là nơi lưu giữ cội nguồn, công đức tổ tiên và truyền thống của dòng họ qua bao đời.</p>
 
-    <p>Dòng họ Lê chúng ta lấy <b>Thủy tổ là Cụ Lê Đình Cai</b>, con trai của <b>Hoàng thân Lê Duy Mật</b>, làm gốc. Từ Thủy tổ, các đời con cháu tiếp nối sinh sôi, lập nghiệp, đóng góp cho gia đình, quê hương và đất nước.</p>
+    <p>Dòng họ Lê chúng ta lấy <b>Thủy Tổ là Cụ Lê Đình Cai</b>, con trai của <b>Hoàng thân Lê Duy Mật</b>, làm gốc. Từ Thủy Tổ, các đời con cháu tiếp nối sinh sôi, lập nghiệp, đóng góp cho gia đình, quê hương và đất nước.</p>
 
     <p>Trải qua thời gian, nhiều tư liệu gia phả bằng giấy đã mai một, phân tán hoặc khó bảo quản. Việc xây dựng Gia phả điện tử nhằm:</p>
 
@@ -110,21 +106,25 @@ svg{width:3400px;height:2400px}
       <li>Kết nối con cháu trong và ngoài nước, dù ở bất cứ nơi đâu</li>
     </ul>
 
-    <p>Gia phả điện tử này được xây dựng trên tinh thần tôn trọng lịch sử – giữ gìn truyền thống – truyền lại cho mai sau.</p>
+    <p>Gia phả điện tử này được xây dựng trên tinh thần tôn trọng lịch sử – giữ gìn truyền thống – truyền lại cho mai sau. Mọi thông tin đều được Ban gia phả rà soát, bổ sung và cập nhật cẩn trọng.</p>
+
+    <p>Nguyện mong con cháu đời sau, khi xem gia phả, luôn nhớ đến công lao tổ tiên, giữ gìn nề nếp gia phong, đoàn kết yêu thương, cùng nhau làm rạng danh dòng họ.</p>
+
+    <p>Gia phả này là tài sản chung của toàn thể dòng họ, được lưu giữ và sử dụng cho mục đích tưởng nhớ tổ tiên và giáo dục truyền thống cho các thế hệ mai sau.</p>
 
     <div class="footer">Ban Gia phả dòng họ Lê Đình</div>
   </div>
 </div>
 
-<!-- ===== QUẢN LÝ ===== -->
+<!-- ========== QUẢN LÝ ========== -->
 <div id="manage" class="section">
   <div id="form">
-    <b>Thêm thành viên</b><br><br>
+    <b>Thêm / cập nhật thành viên</b><br><br>
 
     <label>Cha:</label>
     <select id="parentSelect"></select><br>
 
-    <label>Tên:</label>
+    <label>Họ tên:</label>
     <input id="nameInput"><br>
 
     <label>Con thứ mấy:</label>
@@ -140,13 +140,13 @@ svg{width:3400px;height:2400px}
     <input id="deathInput"><br>
 
     <label>Ảnh đại diện:</label>
-    <input id="avatarInput" type="file" accept="image/*"><br>
+    <input type="file" disabled title="Sẽ cập nhật sau"><br><br>
 
     <button onclick="addPerson()">➕ Thêm người</button>
   </div>
 </div>
 
-<!-- ===== CÂY ===== -->
+<!-- ========== CÂY GIA PHẢ ========== -->
 <div id="tree" class="section">
   <div class="wrapper"><svg></svg></div>
 </div>
@@ -159,16 +159,19 @@ function showPage(id){
   document.getElementById(id).classList.add('active');
 }
 
-let data={
+/* ===== DỮ LIỆU (LƯU LOCAL) ===== */
+let data = JSON.parse(localStorage.getItem("giapha")) || {
   id:1,
-  name:"Lê Đình Cai",
+  name:"Thủy Tổ – Lê Đình Cai",
   doi:1,
   isRoot:true,
   gio:"Giỗ Tổ: 17 tháng Giêng",
-  avatar:"",
   children:[]
 };
-let idCounter=2;
+
+let idCounter = Date.now();
+
+function save(){ localStorage.setItem("giapha", JSON.stringify(data)); }
 
 function allNodes(n,a=[]){
   a.push(n);
@@ -188,30 +191,24 @@ function refreshSelect(){
 
 function addPerson(){
   let p=allNodes(data).find(n=>n.id==parentSelect.value);
-  if(!p.children)p.children=[];
-  let file=avatarInput.files[0];
-  let reader=new FileReader();
-  reader.onload=function(){
-    p.children.push({
-      id:idCounter++,
-      name:nameInput.value,
-      doi:p.doi+1,
-      order:orderInput.value,
-      birth:birthInput.value,
-      home:homeInput.value,
-      gio:deathInput.value,
-      avatar:reader.result
-    });
-    refreshSelect(); draw();
-  };
-  if(file) reader.readAsDataURL(file);
-  else reader.onload();
+  p.children.push({
+    id:idCounter++,
+    name:nameInput.value,
+    doi:p.doi+1,
+    order:orderInput.value,
+    birth:birthInput.value,
+    home:homeInput.value,
+    gio:deathInput.value,
+    children:[]
+  });
+  save();
   nameInput.value=orderInput.value=birthInput.value=homeInput.value=deathInput.value="";
+  refreshSelect(); draw();
 }
 
 function draw(){
   d3.select("svg").selectAll("*").remove();
-  let g=d3.select("svg").append("g").attr("transform","translate(150,400)");
+  let g=d3.select("svg").append("g").attr("transform","translate(160,420)");
   let root=d3.hierarchy(data);
   d3.tree().nodeSize([110,280])(root);
 
@@ -225,21 +222,16 @@ function draw(){
     .attr("class","node")
     .attr("transform",d=>`translate(${d.y},${d.x})`);
 
-  node.append("rect").attr("x",-110).attr("y",-60).attr("width",220).attr("height",120);
+  node.append("rect").attr("x",-110).attr("y",-50).attr("width",220).attr("height",100);
 
-  node.append("image")
-    .attr("x",-20).attr("y",-55)
-    .attr("width",40).attr("height",40)
-    .attr("href",d=>d.data.avatar||"");
-
-  node.append("text").attr("y",-8).attr("text-anchor","middle").text(d=>d.data.name);
-  node.append("text").attr("y",8).attr("text-anchor","middle").style("font-size","12px")
-    .text(d=>d.data.isRoot?"Thủy Tổ":"Đời "+d.data.doi+" – Con thứ "+d.data.order);
-  node.append("text").attr("y",24).attr("text-anchor","middle").style("font-size","11px")
+  node.append("text").attr("y",-28).attr("text-anchor","middle").text(d=>d.data.name);
+  node.append("text").attr("y",-10).attr("text-anchor","middle").style("font-size","12px")
+    .text(d=>d.data.isRoot ? "Thủy Tổ" : "Đời "+d.data.doi+" – Con thứ "+d.data.order);
+  node.append("text").attr("y",6).attr("text-anchor","middle").style("font-size","11px")
     .text(d=>d.data.birth||"");
-  node.append("text").attr("y",38).attr("text-anchor","middle").style("font-size","11px")
+  node.append("text").attr("y",20).attr("text-anchor","middle").style("font-size","11px")
     .text(d=>d.data.home||"");
-  node.append("text").attr("y",52).attr("text-anchor","middle").style("font-size","11px")
+  node.append("text").attr("y",36).attr("text-anchor","middle").style("font-size","11px")
     .text(d=>d.data.gio||"");
 }
 
