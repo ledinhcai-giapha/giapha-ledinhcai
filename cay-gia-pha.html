@@ -7,26 +7,39 @@
 <script src="https://d3js.org/d3.v7.min.js"></script>
 
 <style>
-body{font-family:"Times New Roman",serif;margin:0;padding:10px}
+body{
+  font-family:"Times New Roman",serif;
+  margin:0;padding:10px;
+}
 h1{text-align:center}
-button{margin:3px;padding:4px 8px}
-.hidden{display:none}
-#nav{text-align:center;margin-bottom:10px}
-#nav button{font-weight:bold}
+nav{text-align:center;margin-bottom:15px}
+nav button{margin:0 5px}
+section{display:none}
+section.active{display:block}
+#intro{max-width:900px;margin:auto;line-height:1.7}
 
-#intro{max-width:900px;margin:auto;font-size:18px;line-height:1.6}
+#form{
+  border:1px solid #ccc;
+  padding:10px;
+  margin-bottom:10px;
+  background:#f9f9f9;
+}
+label{display:inline-block;width:100px}
+input,select{margin:4px 0}
 
-#form{border:1px solid #ccc;padding:10px;background:#f9f9f9;margin-bottom:10px}
-label{display:inline-block;width:90px}
-
-.wrapper{width:100%;height:75vh;overflow:auto;border:1px solid #ccc}
+.wrapper{
+  width:100%;
+  height:75vh;
+  overflow:auto;
+  border:1px solid #ccc;
+}
 svg{width:3000px;height:2000px}
 
-.link{fill:none;stroke:#999;stroke-width:1.2px}
+.link{fill:none;stroke:#999}
 .node rect{fill:#fff;stroke:#333;rx:6;ry:6}
-.name{font-weight:bold;text-anchor:middle}
+.name{text-anchor:middle;font-weight:bold;font-size:13px}
 .doi{text-anchor:middle;font-size:11px}
-.thu{text-anchor:middle;font-size:11px;font-style:italic}
+.note{text-anchor:middle;font-size:10px;font-style:italic}
 </style>
 </head>
 
@@ -34,149 +47,140 @@ svg{width:3000px;height:2000px}
 
 <h1>GIA PHẢ DÒNG HỌ LÊ ĐÌNH</h1>
 
-<div id="nav">
-  <button onclick="showPage('home')">🏠 Trang chủ</button>
-  <button onclick="showPage('manage')">✏️ Quản lý gia phả</button>
-</div>
+<nav>
+  <button onclick="show('home')">🏠 Trang chủ</button>
+  <button onclick="show('manage')">✏️ Quản lý gia phả</button>
+</nav>
 
-<!-- ===== TRANG CHỦ ===== -->
-<div id="home">
-  <div id="intro">
-    <h2>LỜI GIỚI THIỆU</h2>
-    <p>
+<!-- TRANG CHỦ -->
+<section id="home" class="active">
+<div id="intro">
+<h2>LỜI GIỚI THIỆU</h2>
+<p>
 Gia phả là sợi dây nối liền các thế hệ, là nơi lưu giữ cội nguồn, công đức tổ tiên
 và truyền thống của dòng họ qua bao đời.
-    </p>
-    <p>
-Dòng họ Lê chúng ta lấy Thủy tổ là <b>Cụ Lê Đình Cai</b>, con trai của Hoàng thân
-<b>Lê Duy Mật</b>, làm gốc. Từ Thủy tổ, các đời con cháu tiếp nối sinh sôi, lập nghiệp,
+</p>
+<p>
+Dòng họ Lê chúng ta lấy <b>Thủy tổ là Cụ Lê Đình Cai</b>,
+con trai của Hoàng thân <b>Lê Duy Mật</b>, làm gốc.
+Từ Thủy tổ, các đời con cháu tiếp nối sinh sôi, lập nghiệp,
 đóng góp cho gia đình, quê hương và đất nước.
-    </p>
-    <p>
-Việc xây dựng Gia phả điện tử nhằm:
+</p>
+<p>
+Trải qua thời gian, nhiều tư liệu gia phả bằng giấy đã mai một,
+phân tán hoặc khó bảo quản. Việc xây dựng Gia phả điện tử nhằm:
+</p>
 <ul>
-<li>Gìn giữ đầy đủ, chính xác thông tin các thế hệ</li>
+<li>Gìn giữ đầy đủ, chính xác thông tin các thế hệ trong dòng họ</li>
 <li>Giúp con cháu tra cứu cội nguồn, vai vế, thứ bậc</li>
-<li>Thuận tiện trong việc giỗ tổ, giỗ chi</li>
+<li>Thuận tiện tổ chức giỗ tổ, giỗ chi, tưởng nhớ tổ tiên</li>
 <li>Kết nối con cháu trong và ngoài nước</li>
 </ul>
-    </p>
-    <p>
-Gia phả điện tử này được xây dựng trên tinh thần tôn trọng lịch sử – giữ gìn truyền thống –
-truyền lại cho mai sau.
-    </p>
-    <p><i>
-📌 Gia phả này là tài sản chung của toàn thể dòng họ.
-    </i></p>
-  </div>
+<p>
+Gia phả điện tử này được xây dựng trên tinh thần
+<b>tôn trọng lịch sử – giữ gìn truyền thống – truyền lại cho mai sau</b>.
+</p>
+<p>
+Nguyện mong con cháu đời sau luôn nhớ công lao tổ tiên,
+giữ gìn nề nếp gia phong, đoàn kết yêu thương,
+cùng nhau làm rạng danh dòng họ.
+</p>
+<p><b>
+Gia phả này là tài sản chung của toàn thể dòng họ,
+dùng cho mục đích tưởng nhớ tổ tiên và giáo dục truyền thống.
+</b></p>
 </div>
+</section>
 
-<!-- ===== QUẢN LÝ ===== -->
-<div id="manage" class="hidden">
-
+<!-- QUẢN LÝ -->
+<section id="manage">
 <div id="form">
-<label>Chọn người:</label>
-<select id="editSelect"></select><br>
-
 <label>Cha:</label>
-<select id="parentSelect"></select><br>
-
+<select id="parent"></select><br>
 <label>Tên:</label>
-<input id="nameInput"><br>
-
+<input id="name"><br>
 <label>Thứ tự:</label>
-<input id="thuInput" type="number" min="1"><br>
-
-<button onclick="addPerson()">➕ Thêm</button>
-<button onclick="updatePerson()">✏️ Cập nhật</button>
+<input id="order" type="number" min="1"><br>
+<button onclick="add()">➕ Thêm</button>
 </div>
 
 <div class="wrapper">
-  <svg></svg>
+<svg></svg>
 </div>
-</div>
+</section>
 
 <script>
-/* ===== LƯU / LOAD ===== */
+function show(id){
+  document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+
+/* ===== DATA ===== */
 let data = JSON.parse(localStorage.getItem("giapha")) || {
-  id:1,name:"Lê Đình Cai",doi:1,thu:1,children:[]
+  id:1,
+  name:"Lê Đình Cai",
+  doi:1,
+  role:"Thủy tổ",
+  children:[]
 };
-let idCounter = Date.now();
+let idc = Date.now();
+
+function all(n,a=[]){a.push(n);(n.children||[]).forEach(c=>all(c,a));return a}
 
 function save(){localStorage.setItem("giapha",JSON.stringify(data))}
 
-/* ===== TIỆN ÍCH ===== */
-function allNodes(n,a=[]){a.push(n);(n.children||[]).forEach(c=>allNodes(c,a));return a}
-
 /* ===== FORM ===== */
-function refreshSelect(){
-  parentSelect.innerHTML=editSelect.innerHTML="";
-  allNodes(data).forEach(n=>{
-    let t=`${n.name} (Đời ${n.doi})`;
-    parentSelect.add(new Option(t,n.id));
-    editSelect.add(new Option(t,n.id));
-  })
+function refresh(){
+  parent.innerHTML="";
+  all(data).forEach(n=>{
+    let o=document.createElement("option");
+    o.value=n.id;
+    o.text=`${n.name} (${n.role||"Đời "+n.doi})`;
+    parent.appendChild(o);
+  });
 }
 
-editSelect.onchange=()=>{
-  let n=allNodes(data).find(x=>x.id==editSelect.value);
-  if(!n)return;
-  nameInput.value=n.name;
-  thuInput.value=n.thu;
-}
-
-/* ===== THÊM ===== */
-function addPerson(){
-  let p=allNodes(data).find(n=>n.id==parentSelect.value);
-  if(!p)return;
+/* ===== ADD ===== */
+function add(){
+  let p=all(data).find(n=>n.id==parent.value);
+  if(!name.value)return alert("Nhập tên");
   p.children.push({
-    id:idCounter++,
-    name:nameInput.value,
+    id:++idc,
+    name:name.value,
     doi:p.doi+1,
-    thu:thuInput.value||1,
+    role:`Con thứ ${order.value||"?"}`,
     children:[]
   });
-  save();draw();refreshSelect();
+  name.value="";order.value="";
+  save();refresh();draw();
 }
 
-/* ===== SỬA ===== */
-function updatePerson(){
-  let n=allNodes(data).find(x=>x.id==editSelect.value);
-  if(!n)return;
-  n.name=nameInput.value;
-  n.thu=thuInput.value;
-  save();draw();refreshSelect();
-}
-
-/* ===== VẼ ===== */
+/* ===== DRAW ===== */
 function draw(){
   d3.select("svg").selectAll("*").remove();
   let g=d3.select("svg").append("g").attr("transform","translate(150,500)");
-  let root=d3.hierarchy(data);
-  d3.tree().nodeSize([90,220])(root);
+  let r=d3.hierarchy(data);
+  d3.tree().nodeSize([90,220])(r);
 
-  g.selectAll(".link").data(root.links()).enter().append("path")
-   .attr("class","link")
-   .attr("d",d3.linkHorizontal().x(d=>d.y).y(d=>d.x));
+  g.selectAll(".link")
+    .data(r.links())
+    .enter().append("path")
+    .attr("class","link")
+    .attr("d",d3.linkHorizontal().x(d=>d.y).y(d=>d.x));
 
-  let n=g.selectAll(".node").data(root.descendants()).enter()
-   .append("g").attr("class","node")
-   .attr("transform",d=>`translate(${d.y},${d.x})`);
+  let n=g.selectAll(".node")
+    .data(r.descendants())
+    .enter().append("g")
+    .attr("class","node")
+    .attr("transform",d=>`translate(${d.y},${d.x})`);
 
   n.append("rect").attr("x",-70).attr("y",-32).attr("width",140).attr("height",64);
   n.append("text").attr("class","name").attr("y",-8).text(d=>d.data.name);
-  n.append("text").attr("class","doi").attr("y",10).text(d=>"Đời "+d.data.doi);
-  n.append("text").attr("class","thu").attr("y",26).text(d=>"Con thứ "+d.data.thu);
+  n.append("text").attr("class","doi").attr("y",10).text(d=>d.data.role||("Đời "+d.data.doi));
 }
 
-/* ===== CHUYỂN TRANG ===== */
-function showPage(p){
-  home.classList.toggle("hidden",p!=="home");
-  manage.classList.toggle("hidden",p!=="manage");
-}
-
-/* ===== INIT ===== */
-refreshSelect();draw();
+refresh();draw();
 </script>
+
 </body>
 </html>
