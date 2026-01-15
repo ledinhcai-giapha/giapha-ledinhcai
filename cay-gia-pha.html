@@ -28,7 +28,7 @@ h1{text-align:center}
 .section{display:none}
 .section.active{display:block}
 #form{border:1px solid #ccc;padding:15px;background:#f9f9f9}
-label{display:inline-block;width:180px}
+label{display:inline-block;width:160px}
 input,select{width:280px;margin-bottom:6px}
 .wrapper{height:70vh;overflow:auto;border:1px solid #ccc}
 svg{width:4000px;height:2500px}
@@ -52,7 +52,7 @@ svg{width:4000px;height:2500px}
 <h2 style="text-align:center">LỜI GIỚI THIỆU</h2>
 <p>Gia phả là sợi dây nối liền các thế hệ, là nơi lưu giữ cội nguồn, công đức tổ tiên và truyền thống của dòng họ qua bao đời.</p>
 <p>Dòng họ Lê chúng ta lấy <b>Thủy tổ là Cụ Lê Đình Cai</b>, con trai của <b>Hoàng thân Lê Duy Mật</b>, làm gốc.</p>
-<p>Gia phả điện tử này được xây dựng nhằm gìn giữ truyền thống – kết nối con cháu – truyền lại cho mai sau.</p>
+<p>Gia phả điện tử được lập để gìn giữ truyền thống và truyền lại cho mai sau.</p>
 <div class="footer">Ban Gia phả dòng họ Lê Đình</div>
 </div>
 
@@ -62,8 +62,11 @@ svg{width:4000px;height:2500px}
 <b>Thêm / chỉnh sửa thành viên</b><br><br>
 
 <label>Thủy Tổ:</label>
+<input value="Lê Đình Cai" readonly><br>
+
+<label>Người cần sửa:</label>
 <select id="editSelect">
-  <option value="">(Không chọn – đang thêm con)</option>
+  <option value="">(Không sửa – đang thêm con)</option>
 </select><br>
 
 <label>Cha (để sinh con):</label>
@@ -101,7 +104,6 @@ function showPage(id){
  document.getElementById(id).classList.add('active');
 }
 
-/* ===== DATA ===== */
 let data={
  id:1,
  name:"Thủy Tổ – Lê Đình Cai",
@@ -111,24 +113,21 @@ let data={
 };
 let idCounter=2;
 
-/* ===== UTILS ===== */
 function allNodes(n,a=[]){
  a.push(n);
  (n.children||[]).forEach(c=>allNodes(c,a));
  return a;
 }
 
-/* ===== SELECT ===== */
 function refreshSelects(){
- editSelect.innerHTML='<option value="">(Không chọn – đang thêm con)</option>';
+ editSelect.innerHTML='<option value="">(Không sửa – đang thêm con)</option>';
  parentSelect.innerHTML="";
  allNodes(data).forEach(n=>{
-   editSelect.add(new Option(n.name,n.id));
+   if(n.id!==1) editSelect.add(new Option(n.name,n.id));
    parentSelect.add(new Option(n.name+" (Đời "+n.doi+")",n.id));
  });
 }
 
-/* ===== ADD ===== */
 function addPerson(){
  let parent=allNodes(data).find(n=>n.id==parentSelect.value);
  if(!nameInput.value){alert("Nhập họ tên");return;}
@@ -147,11 +146,9 @@ function addPerson(){
  draw();
 }
 
-/* ===== UPDATE ===== */
 function updatePerson(){
  let id=Number(editSelect.value);
- if(!id){alert("Chọn người cần sửa");return;}
- if(id===1){alert("Không sửa Thủy Tổ");return;}
+ if(!id){alert("Chưa chọn người cần sửa");return;}
  let p=allNodes(data).find(n=>n.id===id);
  p.name=nameInput.value;
  p.order=orderInput.value;
@@ -164,17 +161,14 @@ function updatePerson(){
  alert("Đã cập nhật trên cây");
 }
 
-/* ===== FORM ===== */
 function clearForm(){
  nameInput.value=orderInput.value=birthInput.value=homeInput.value=deathInput.value="";
  editSelect.value="";
 }
 
-/* ===== LOAD EDIT ===== */
 editSelect.onchange=function(){
- let id=Number(this.value);
- if(!id){clearForm();return;}
- let p=allNodes(data).find(n=>n.id===id);
+ let p=allNodes(data).find(n=>n.id==this.value);
+ if(!p){clearForm();return;}
  nameInput.value=p.name;
  orderInput.value=p.order||"";
  birthInput.value=p.birth||"";
@@ -182,7 +176,6 @@ editSelect.onchange=function(){
  deathInput.value=p.gio||"";
 };
 
-/* ===== DRAW ===== */
 function draw(){
  d3.select("svg").selectAll("*").remove();
  let g=d3.select("svg").append("g").attr("transform","translate(200,400)");
@@ -202,7 +195,7 @@ function draw(){
  node.append("rect").attr("x",-110).attr("y",-45).attr("width",220).attr("height",90);
  node.append("text").attr("y",-20).attr("text-anchor","middle").text(d=>d.data.name);
  node.append("text").attr("y",-5).attr("text-anchor","middle")
-   .text(d=>d.data.id==1?"":"Đời "+d.data.doi+" – Con "+d.data.order);
+   .text(d=>d.data.id==1?"Thủy Tổ":"Đời "+d.data.doi+" – Con "+d.data.order);
  node.append("text").attr("y",12).attr("text-anchor","middle").text(d=>d.data.gio||"");
 }
 
