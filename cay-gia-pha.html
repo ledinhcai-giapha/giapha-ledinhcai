@@ -11,21 +11,19 @@ body{
   font-family:"Times New Roman",serif;
   margin:0;
   padding:30px;
-
-  /* ẢNH NỀN LÀNG QUÊ VIỆT NAM XƯA */
-  background-image: url("https://tranhnhatthanh.vn/wp-content/uploads/2024/07/tranh-lang-que-viet-nam-xua-14.jpg");
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-attachment: fixed;
-  background-size: cover;
+  background-image:url("https://tranhnhatthanh.vn/wp-content/uploads/2024/07/tranh-lang-que-viet-nam-xua-14.jpg");
+  background-repeat:no-repeat;
+  background-position:center center;
+  background-attachment:fixed;
+  background-size:cover;
 }
 
 .main{
-  background: rgba(255,255,255,0.94);
-  max-width: 1200px;
-  margin: auto;
-  padding: 30px 40px;
-  box-shadow: 0 0 30px rgba(0,0,0,0.4);
+  background:rgba(255,255,255,0.94);
+  max-width:1200px;
+  margin:auto;
+  padding:30px 40px;
+  box-shadow:0 0 30px rgba(0,0,0,0.4);
 }
 
 h1{text-align:center;margin-bottom:10px}
@@ -60,7 +58,7 @@ h1{text-align:center;margin-bottom:10px}
   background:#f9f9f9;
 }
 
-label{display:inline-block;width:150px}
+label{display:inline-block;width:160px}
 input,select{margin-bottom:6px;width:280px}
 
 .wrapper{
@@ -100,22 +98,9 @@ svg{width:3200px;height:2200px}
 
     <p>Gia phả là sợi dây nối liền các thế hệ, là nơi lưu giữ cội nguồn, công đức tổ tiên và truyền thống của dòng họ qua bao đời.</p>
 
-    <p>Dòng họ Lê chúng ta lấy <b>Thủy Tổ là Cụ Lê Đình Cai</b>, con trai của <b>Hoàng thân Lê Duy Mật</b>, làm gốc. Từ Thủy Tổ, các đời con cháu tiếp nối sinh sôi, lập nghiệp, đóng góp cho gia đình, quê hương và đất nước.</p>
+    <p>Dòng họ Lê chúng ta lấy <b>Thủy Tổ là Cụ Lê Đình Cai</b>, con trai của <b>Hoàng thân Lê Duy Mật</b>, làm gốc.</p>
 
-    <p>Trải qua thời gian, nhiều tư liệu gia phả bằng giấy đã mai một, phân tán hoặc khó bảo quản. Việc xây dựng Gia phả điện tử nhằm:</p>
-
-    <ul>
-      <li>Gìn giữ đầy đủ, chính xác thông tin các thế hệ trong dòng họ</li>
-      <li>Giúp con cháu dễ dàng tra cứu cội nguồn, vai vế, thứ bậc</li>
-      <li>Thuận tiện trong việc tổ chức giỗ tổ, giỗ chi, tưởng nhớ tổ tiên</li>
-      <li>Kết nối con cháu trong và ngoài nước, dù ở bất cứ nơi đâu</li>
-    </ul>
-
-    <p>Gia phả điện tử này được xây dựng trên tinh thần <b>tôn trọng lịch sử – giữ gìn truyền thống – truyền lại cho mai sau</b>. Mọi thông tin đều được Ban gia phả rà soát, bổ sung và cập nhật cẩn trọng.</p>
-
-    <p>Nguyện mong con cháu đời sau, khi xem gia phả, luôn nhớ đến công lao tổ tiên, giữ gìn nề nếp gia phong, đoàn kết yêu thương, cùng nhau làm rạng danh dòng họ.</p>
-
-    <p>Gia phả này là tài sản chung của toàn thể dòng họ, được lưu giữ và sử dụng cho mục đích tưởng nhớ tổ tiên và giáo dục truyền thống cho các thế hệ mai sau.</p>
+    <p>Gia phả điện tử này được xây dựng nhằm gìn giữ truyền thống – kết nối con cháu – truyền lại cho mai sau.</p>
 
     <div class="footer">Ban Gia phả dòng họ Lê Đình</div>
   </div>
@@ -124,7 +109,10 @@ svg{width:3200px;height:2200px}
 <!-- ===== QUẢN LÝ ===== -->
 <div id="manage" class="section">
   <div id="form">
-    <b>Thêm / cập nhật thành viên</b><br><br>
+    <b>Thêm / chỉnh sửa thành viên</b><br><br>
+
+    <label>Chọn người:</label>
+    <select id="editSelect" onchange="loadPerson()"></select><br>
 
     <label>Cha:</label>
     <select id="parentSelect"></select><br>
@@ -148,10 +136,11 @@ svg{width:3200px;height:2200px}
     <input type="file" disabled title="Sẽ cập nhật sau"><br><br>
 
     <button onclick="addPerson()">➕ Thêm người</button>
+    <button onclick="updatePerson()">✏️ Cập nhật</button>
   </div>
 </div>
 
-<!-- ===== CÂY GIA PHẢ ===== -->
+<!-- ===== CÂY ===== -->
 <div id="tree" class="section">
   <div class="wrapper"><svg></svg></div>
 </div>
@@ -173,6 +162,7 @@ let data={
   children:[]
 };
 let idCounter=2;
+let editingId=null;
 
 function allNodes(n,a=[]){
   a.push(n);
@@ -190,6 +180,29 @@ function refreshSelect(){
   });
 }
 
+function refreshEdit(){
+  editSelect.innerHTML="";
+  allNodes(data).forEach(n=>{
+    let o=document.createElement("option");
+    o.value=n.id;
+    o.text=n.name+(n.isRoot?" (Thủy Tổ)":"");
+    editSelect.appendChild(o);
+  });
+}
+
+function loadPerson(){
+  let id=Number(editSelect.value);
+  let p=allNodes(data).find(n=>n.id===id);
+  if(!p) return;
+
+  editingId=id;
+  nameInput.value=p.name.replace("Thủy Tổ – ","");
+  orderInput.value=p.order||"";
+  birthInput.value=p.birth||"";
+  homeInput.value=p.home||"";
+  deathInput.value=p.gio||"";
+}
+
 function addPerson(){
   let p=allNodes(data).find(n=>n.id==parentSelect.value);
   if(!p.children)p.children=[];
@@ -203,7 +216,20 @@ function addPerson(){
     gio:deathInput.value
   });
   nameInput.value=orderInput.value=birthInput.value=homeInput.value=deathInput.value="";
-  refreshSelect(); draw();
+  refreshSelect();refreshEdit();draw();
+}
+
+function updatePerson(){
+  if(editingId===1){alert("Không chỉnh sửa Thủy Tổ");return;}
+  let p=allNodes(data).find(n=>n.id===editingId);
+  if(!p) return;
+  p.name=nameInput.value;
+  p.order=orderInput.value;
+  p.birth=birthInput.value;
+  p.home=homeInput.value;
+  p.gio=deathInput.value;
+  draw();refreshSelect();refreshEdit();
+  alert("Đã cập nhật");
 }
 
 function draw(){
@@ -222,36 +248,18 @@ function draw(){
     .attr("class","node")
     .attr("transform",d=>`translate(${d.y},${d.x})`);
 
-  node.append("rect")
-    .attr("x",-100).attr("y",-45)
-    .attr("width",200).attr("height",90);
+  node.append("rect").attr("x",-100).attr("y",-45).attr("width",200).attr("height",90);
 
-  node.append("text")
-    .attr("y",-22).attr("text-anchor","middle")
-    .text(d=>d.data.name);
-
-  node.append("text")
-    .attr("y",-6).attr("text-anchor","middle")
-    .style("font-size","12px")
-    .text(d=>d.data.isRoot ? "Thủy Tổ" : "Đời "+d.data.doi+" – Con thứ "+d.data.order);
-
-  node.append("text")
-    .attr("y",10).attr("text-anchor","middle")
-    .style("font-size","11px")
-    .text(d=>d.data.birth||"");
-
-  node.append("text")
-    .attr("y",24).attr("text-anchor","middle")
-    .style("font-size","11px")
-    .text(d=>d.data.home||"");
-
-  node.append("text")
-    .attr("y",38).attr("text-anchor","middle")
-    .style("font-size","11px")
-    .text(d=>d.data.gio||"");
+  node.append("text").attr("y",-22).attr("text-anchor","middle").text(d=>d.data.name);
+  node.append("text").attr("y",-6).attr("text-anchor","middle").style("font-size","12px")
+    .text(d=>d.data.isRoot?"Thủy Tổ":"Đời "+d.data.doi+" – Con thứ "+d.data.order);
+  node.append("text").attr("y",10).attr("text-anchor","middle").style("font-size","11px").text(d=>d.data.birth||"");
+  node.append("text").attr("y",24).attr("text-anchor","middle").style("font-size","11px").text(d=>d.data.home||"");
+  node.append("text").attr("y",38).attr("text-anchor","middle").style("font-size","11px").text(d=>d.data.gio||"");
 }
 
 refreshSelect();
+refreshEdit();
 draw();
 </script>
 
