@@ -8,21 +8,23 @@
 <style>
 body{
   font-family:"Times New Roman",serif;
-  margin:0;padding:30px;
+  margin:0;
+  padding:30px;
   background:url("https://tranhnhatthanh.vn/wp-content/uploads/2024/07/tranh-lang-que-viet-nam-xua-14.jpg")
-  no-repeat center center fixed;
+    no-repeat center center fixed;
   background-size:cover;
 }
 .main{
   background:rgba(255,255,255,0.95);
-  max-width:1200px;margin:auto;padding:30px;
+  max-width:1200px;
+  margin:auto;
+  padding:30px 40px;
 }
-.menu{text-align:center;margin:15px}
-.menu button{padding:6px 14px;font-weight:bold}
+.menu{text-align:center;margin:20px 0}
+.menu button{padding:6px 16px;font-weight:bold}
 .section{display:none}
 .section.active{display:block}
-#form{border:1px solid #ccc;padding:15px;background:#f9f9f9}
-label{display:inline-block;width:170px}
+label{display:inline-block;width:180px}
 input,select{width:280px;margin-bottom:6px}
 .wrapper{height:70vh;overflow:auto;border:1px solid #ccc}
 svg{width:4000px;height:2500px}
@@ -36,26 +38,25 @@ svg{width:4000px;height:2500px}
 <h1 style="text-align:center">GIA PHẢ DÒNG HỌ LÊ ĐÌNH</h1>
 
 <div class="menu">
-<button onclick="show('home')">Trang chủ</button>
-<button onclick="show('manage')">Quản lý</button>
-<button onclick="show('tree')">Gia phả</button>
+  <button onclick="show('home')">🏠 Trang chủ</button>
+  <button onclick="show('manage')">✏️ Quản lý</button>
+  <button onclick="show('tree')">🌳 Gia phả</button>
 </div>
 
 <!-- TRANG CHỦ -->
 <div id="home" class="section active">
 <h2 style="text-align:center">LỜI GIỚI THIỆU</h2>
 <p>Gia phả là sợi dây nối liền các thế hệ, là nơi lưu giữ cội nguồn, công đức tổ tiên và truyền thống của dòng họ qua bao đời.</p>
-<p>Dòng họ Lê chúng ta lấy Thủy tổ là Cụ Lê Đình Cai, con trai của Hoàng thân Lê Duy Mật, làm gốc.</p>
-<p>Gia phả điện tử này nhằm gìn giữ truyền thống – kết nối con cháu – truyền lại cho mai sau.</p>
+<p>Dòng họ Lê chúng ta lấy <b>Thủy tổ là Cụ Lê Đình Cai</b>, con trai của <b>Hoàng thân Lê Duy Mật</b>, làm gốc.</p>
+<p>Gia phả điện tử này được xây dựng nhằm gìn giữ truyền thống – kết nối con cháu – truyền lại cho mai sau.</p>
 </div>
 
 <!-- QUẢN LÝ -->
 <div id="manage" class="section">
-<div id="form">
 <b>Thêm / chỉnh sửa thành viên</b><br><br>
 
 <label>Thủy Tổ:</label>
-<b>Lê Đình Cai</b><br><br>
+<input value="Lê Đình Cai" disabled><br>
 
 <label>Cha (để sinh con):</label>
 <select id="parentSelect"></select><br>
@@ -78,7 +79,6 @@ svg{width:4000px;height:2500px}
 <button onclick="addChild()">➕ Thêm con</button>
 <button onclick="updateNode()">✏️ Cập nhật</button>
 </div>
-</div>
 
 <!-- CÂY -->
 <div id="tree" class="section">
@@ -92,7 +92,7 @@ function show(id){
  document.getElementById(id).classList.add('active');
 }
 
-/* ===== DỮ LIỆU ===== */
+/* DATA */
 let data={
  id:1,
  name:"Thủy Tổ – Lê Đình Cai",
@@ -101,61 +101,63 @@ let data={
  children:[]
 };
 let idCounter=2;
-let selectedNode=null;
+let selectedId=null;
 
-/* ===== TIỆN ÍCH ===== */
-function all(n,a=[]){
+/* UTIL */
+function nodes(n,a=[]){
  a.push(n);
- (n.children||[]).forEach(c=>all(c,a));
+ (n.children||[]).forEach(c=>nodes(c,a));
  return a;
 }
 
-/* ===== SELECT CHA ===== */
-function refreshParent(){
+/* SELECT */
+function refresh(){
  parentSelect.innerHTML="";
- all(data).forEach(n=>{
-  parentSelect.add(new Option(n.name+" (Đời "+n.doi+")",n.id));
+ nodes(data).forEach(n=>{
+   parentSelect.add(new Option(n.name+" (Đời "+n.doi+")",n.id));
  });
 }
 
-/* ===== THÊM CON ===== */
+/* ADD */
 function addChild(){
- let cha=all(data).find(n=>n.id==parentSelect.value);
+ let parent=nodes(data).find(n=>n.id==parentSelect.value);
  if(!nameInput.value){alert("Nhập họ tên");return;}
- cha.children.push({
-  id:idCounter++,
-  name:nameInput.value,
-  doi:cha.doi+1,
-  order:orderInput.value,
-  birth:birthInput.value,
-  home:homeInput.value,
-  gio:deathInput.value,
-  children:[]
+ parent.children.push({
+   id:idCounter++,
+   name:nameInput.value,
+   doi:parent.doi+1,
+   order:orderInput.value,
+   birth:birthInput.value,
+   home:homeInput.value,
+   gio:deathInput.value,
+   children:[]
  });
  clear();
- refreshParent();
+ refresh();
  draw();
 }
 
-/* ===== CẬP NHẬT ===== */
+/* UPDATE */
 function updateNode(){
- if(!selectedNode){alert("Click người cần sửa trên cây");return;}
- if(selectedNode.id===1){alert("Không sửa Thủy Tổ");return;}
- selectedNode.name=nameInput.value;
- selectedNode.order=orderInput.value;
- selectedNode.birth=birthInput.value;
- selectedNode.home=homeInput.value;
- selectedNode.gio=deathInput.value;
+ if(!selectedId || selectedId===1){
+   alert("Chọn thành viên trên CÂY để sửa");
+   return;
+ }
+ let p=nodes(data).find(n=>n.id===selectedId);
+ p.name=nameInput.value;
+ p.order=orderInput.value;
+ p.birth=birthInput.value;
+ p.home=homeInput.value;
+ p.gio=deathInput.value;
  draw();
- alert("Đã cập nhật trực tiếp lên cây");
 }
 
-/* ===== CLEAR ===== */
+/* FORM */
 function clear(){
  nameInput.value=orderInput.value=birthInput.value=homeInput.value=deathInput.value="";
 }
 
-/* ===== VẼ CÂY ===== */
+/* DRAW */
 function draw(){
  d3.select("svg").selectAll("*").remove();
  let g=d3.select("svg").append("g").attr("transform","translate(200,400)");
@@ -172,23 +174,22 @@ function draw(){
   .attr("class","node")
   .attr("transform",d=>`translate(${d.y},${d.x})`)
   .on("click",(e,d)=>{
-    selectedNode=d.data;
+    selectedId=d.data.id;
     nameInput.value=d.data.name.replace("Thủy Tổ – ","");
     orderInput.value=d.data.order||"";
     birthInput.value=d.data.birth||"";
     homeInput.value=d.data.home||"";
     deathInput.value=d.data.gio||"";
-    show('manage');
   });
 
  node.append("rect").attr("x",-110).attr("y",-45).attr("width",220).attr("height",90);
  node.append("text").attr("y",-20).attr("text-anchor","middle").text(d=>d.data.name);
  node.append("text").attr("y",-5).attr("text-anchor","middle")
    .text(d=>d.data.id===1?"Thủy Tổ":"Đời "+d.data.doi+" – Con "+d.data.order);
- node.append("text").attr("y",12).attr("text-anchor","middle").text(d=>d.data.gio||"");
+ node.append("text").attr("y",15).attr("text-anchor","middle").text(d=>d.data.gio||"");
 }
 
-refreshParent();
+refresh();
 draw();
 </script>
 </body>
