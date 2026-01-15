@@ -7,128 +7,113 @@
 <script src="https://d3js.org/d3.v7.min.js"></script>
 
 <style>
-  body {
-    font-family: "Times New Roman", serif;
-    margin: 0;
-    padding: 10px;
-  }
+body {
+  font-family: "Times New Roman", serif;
+  margin: 0;
+  padding: 10px;
+}
 
-  h1 {
-    text-align: center;
-    margin: 10px 0 20px;
-  }
+h1 {
+  text-align: center;
+  margin: 10px 0 20px;
+}
 
-  svg {
-    width: 3000px;   /* ÉP CỨNG */
-    height: 1600px;  /* ÉP CỨNG */
-    border: 1px solid #ccc;
-  }
+.wrapper {
+  width: 100%;
+  height: 90vh;
+  overflow: auto;
+  border: 1px solid #ccc;
+}
 
-  .link {
-    fill: none;
-    stroke: #999;
-    stroke-width: 1.2px;
-  }
+svg {
+  width: 2600px;
+  height: 1600px;
+}
 
-  .node rect {
-    fill: #fff;
-    stroke: #333;
-    stroke-width: 1.2px;
-    rx: 6;
-    ry: 6;
-  }
+.link {
+  fill: none;
+  stroke: #999;
+  stroke-width: 1.2px;
+}
 
-  .name {
-    font-size: 13px;
-    font-weight: bold;
-    text-anchor: middle;
-  }
+.node rect {
+  stroke: #333;
+  stroke-width: 1.2px;
+  rx: 6;
+  ry: 6;
+}
 
-  .doi {
-    font-size: 11px;
-    fill: #555;
-    text-anchor: middle;
-  }
+.node text {
+  text-anchor: middle;
+  pointer-events: none;
+}
+
+.name {
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.doi {
+  font-size: 11px;
+  fill: #555;
+}
 </style>
 </head>
 
 <body>
 <h1>GIA PHẢ DÒNG HỌ LÊ ĐÌNH</h1>
 
-<div style="overflow:auto">
+<div class="wrapper">
   <svg></svg>
 </div>
 
 <script>
-/* ====== TẠO CÂY 20 ĐỜI ====== */
-const MAX_DOI = 20;
+fetch("data-gia-pha.json")
+  .then(r => r.json())
+  .then(data => {
 
-function build(node, doi) {
-  if (doi >= MAX_DOI) return;
-  node.children = [];
+    const svg = d3.select("svg")
+      .append("g")
+      .attr("transform", "translate(120,800)");
 
-  const soCon = doi === 1 ? 5 : 2; // Thủy tổ nhiều con
+    const tree = d3.tree().nodeSize([80, 220]);
+    const root = d3.hierarchy(data);
+    tree(root);
 
-  for (let i = 1; i <= soCon; i++) {
-    const child = {
-      name: `Đời ${doi + 1} – Nhánh ${i}`,
-      doi: doi + 1
-    };
-    node.children.push(child);
-    build(child, doi + 1);
-  }
-}
+    svg.selectAll(".link")
+      .data(root.links())
+      .enter()
+      .append("path")
+      .attr("class", "link")
+      .attr("d", d3.linkHorizontal()
+        .x(d => d.y)
+        .y(d => d.x)
+      );
 
-const data = {
-  name: "Lê Đình Cai",
-  doi: 1
-};
+    const node = svg.selectAll(".node")
+      .data(root.descendants())
+      .enter()
+      .append("g")
+      .attr("class", "node")
+      .attr("transform", d => `translate(${d.y},${d.x})`);
 
-build(data, 1);
+    node.append("rect")
+      .attr("x", -70)
+      .attr("y", -28)
+      .attr("width", 140)
+      .attr("height", 56)
+      .attr("fill", d => d.data.chi === "root" ? "#f2f2f2" : "#ffffff");
 
-/* ====== VẼ ====== */
-const svg = d3.select("svg")
-  .append("g")
-  .attr("transform", "translate(150,800)"); // GỐC CÂY Ở GIỮA MÀN
+    node.append("text")
+      .attr("class", "name")
+      .attr("y", -6)
+      .text(d => d.data.name);
 
-const tree = d3.tree().nodeSize([90, 220]);
-const root = d3.hierarchy(data);
-tree(root);
-
-/* Nhánh */
-svg.selectAll(".link")
-  .data(root.links())
-  .enter()
-  .append("path")
-  .attr("class", "link")
-  .attr("d", d3.linkHorizontal()
-    .x(d => d.y)
-    .y(d => d.x)
-  );
-
-/* Node */
-const node = svg.selectAll(".node")
-  .data(root.descendants())
-  .enter()
-  .append("g")
-  .attr("class", "node")
-  .attr("transform", d => `translate(${d.y},${d.x})`);
-
-node.append("rect")
-  .attr("x", -70)
-  .attr("y", -28)
-  .attr("width", 140)
-  .attr("height", 56);
-
-node.append("text")
-  .attr("class", "name")
-  .attr("y", -6)
-  .text(d => d.data.name);
-
-node.append("text")
-  .attr("class", "doi")
-  .attr("y", 14)
-  .text(d => "Đời " + d.data.doi);
+    node.append("text")
+      .attr("class", "doi")
+      .attr("y", 14)
+      .text(d => "Đời " + d.data.doi);
+  });
 </script>
 </body>
 </html>
