@@ -5,36 +5,60 @@
 <title>Cây gia phả dòng họ Lê</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="https://d3js.org/d3.v7.min.js"></script>
+
 <style>
   body { font-family: "Times New Roman", serif; margin:0; padding:10px; }
   h1 { text-align:center; }
+
   svg { width:100%; height:90vh; }
+
   .link { fill:none; stroke:#999; stroke-width:1.5px; }
-  .node rect { fill:#fff; stroke:#333; stroke-width:1.5px; rx:6; ry:6; }
-  .node text { font-size:14px; pointer-events:none; text-anchor:middle; }
+
+  .node rect {
+    stroke:#333;
+    stroke-width:1.5px;
+    rx:6; ry:6;
+  }
+
+  .node text {
+    font-size:13px;
+    pointer-events:none;
+    text-anchor:middle;
+    fill:#000;
+  }
+
+  .doi {
+    font-size:11px;
+    fill:#555;
+  }
 </style>
 </head>
+
 <body>
-
 <h1>CÂY GIA PHẢ DÒNG HỌ LÊ</h1>
-
 <svg></svg>
 
 <script>
+const colorByChi = {
+  "Thủy tổ": "#f2f2f2",
+  "Chi 1": "#ffe0e0",
+  "Chi 2": "#e0f0ff",
+  "Chi 3": "#e0ffe8",
+  "Chi 4": "#fff5d9"
+};
+
 fetch("data-gia-pha.json")
-.then(r => r.json())
+.then(res => res.json())
 .then(data => {
-  const width = document.querySelector("svg").clientWidth;
-  const height = document.querySelector("svg").clientHeight;
 
-  const svg = d3.select("svg")
-    .append("g")
-    .attr("transform","translate(50,50)");
+  const svg = d3.select("svg").append("g")
+    .attr("transform","translate(60,40)");
 
-  const tree = d3.tree().size([height-100, width-200]);
+  const tree = d3.tree().size([800, 1600]);
   const root = d3.hierarchy(data);
   tree(root);
 
+  // Vẽ nhánh
   svg.selectAll(".link")
     .data(root.links())
     .enter()
@@ -45,6 +69,7 @@ fetch("data-gia-pha.json")
       .y(d => d.x)
     );
 
+  // Vẽ node
   const node = svg.selectAll(".node")
     .data(root.descendants())
     .enter()
@@ -52,17 +77,25 @@ fetch("data-gia-pha.json")
     .attr("class","node")
     .attr("transform", d => `translate(${d.y},${d.x})`);
 
+  // Ô nền + màu chi
   node.append("rect")
-    .attr("x",-70)
-    .attr("y",-20)
-    .attr("width",140)
-    .attr("height",40);
+    .attr("x",-75)
+    .attr("y",-28)
+    .attr("width",150)
+    .attr("height",56)
+    .attr("fill", d => colorByChi[d.data.chi] || "#ffffff");
 
+  // Tên
   node.append("text")
-    .attr("dy","0.35em")
+    .attr("y",-4)
     .text(d => d.data.name);
+
+  // Đời
+  node.append("text")
+    .attr("class","doi")
+    .attr("y",14)
+    .text(d => "Đời " + d.data.doi);
 });
 </script>
-
 </body>
 </html>
