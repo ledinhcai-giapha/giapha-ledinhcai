@@ -9,12 +9,17 @@
       "chi": "chi1",
       "children": [
         {
-          "name": "Đời 3 - A",
+          "name": "Cháu A",
           "doi": 3,
           "chi": "chi1",
           "children": [
             {
-              "name": "Đời 4 - A1",
+              "name": "Chắt A1",
+              "doi": 4,
+              "chi": "chi1"
+            },
+            {
+              "name": "Chắt A2",
               "doi": 4,
               "chi": "chi1"
             }
@@ -25,14 +30,22 @@
     {
       "name": "Con trai thứ",
       "doi": 2,
-      "chi": "chi2",
-      "children": [
-        {
-          "name": "Đời 3 - B",
-          "doi": 3,
-          "chi": "chi2"
-        }
-      ]
+      "chi": "chi2"
+    },
+    {
+      "name": "Con trai ba",
+      "doi": 2,
+      "chi": "chi3"
+    },
+    {
+      "name": "Con trai tư",
+      "doi": 2,
+      "chi": "chi4"
+    },
+    {
+      "name": "Con trai năm",
+      "doi": 2,
+      "chi": "chi5"
     }
   ]
 }
