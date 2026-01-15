@@ -49,53 +49,11 @@ svg{width:4000px;height:2500px}
 
 <!-- TRANG CHỦ -->
 <div id="home" class="section active">
-  <div class="intro">
-    <h2 style="text-align:center">LỜI GIỚI THIỆU</h2>
-
-    <p>
-      Gia phả là sợi dây nối liền các thế hệ, là nơi lưu giữ cội nguồn,
-      công đức tổ tiên và truyền thống của dòng họ qua bao đời.
-    </p>
-
-    <p>
-      Dòng họ Lê chúng ta lấy <b>Thủy tổ là Cụ Lê Đình Cai</b>,
-      con trai của <b>Hoàng thân Lê Duy Mật</b>, làm gốc.
-      Từ Thủy tổ, các đời con cháu tiếp nối sinh sôi, lập nghiệp,
-      đóng góp cho gia đình, quê hương và đất nước.
-    </p>
-
-    <p>
-      Trải qua thời gian, nhiều tư liệu gia phả bằng giấy đã mai một,
-      phân tán hoặc khó bảo quản. Việc xây dựng Gia phả điện tử nhằm:
-    </p>
-
-    <ul>
-      <li>Gìn giữ đầy đủ, chính xác thông tin các thế hệ trong dòng họ</li>
-      <li>Giúp con cháu dễ dàng tra cứu cội nguồn, vai vế, thứ bậc</li>
-      <li>Thuận tiện trong việc tổ chức giỗ tổ, giỗ chi, tưởng nhớ tổ tiên</li>
-      <li>Kết nối con cháu trong và ngoài nước, dù ở bất cứ nơi đâu</li>
-    </ul>
-
-    <p>
-      Gia phả điện tử này được xây dựng trên tinh thần
-      <b>tôn trọng lịch sử – giữ gìn truyền thống – truyền lại cho mai sau</b>.
-      Mọi thông tin đều được Ban gia phả rà soát, bổ sung và cập nhật cẩn trọng.
-    </p>
-
-    <p>
-      Nguyện mong con cháu đời sau, khi xem gia phả,
-      luôn nhớ đến công lao tổ tiên, giữ gìn nề nếp gia phong,
-      đoàn kết yêu thương, cùng nhau làm rạng danh dòng họ.
-    </p>
-
-    <p>
-      Gia phả này là tài sản chung của toàn thể dòng họ,
-      được lưu giữ và sử dụng cho mục đích tưởng nhớ tổ tiên
-      và giáo dục truyền thống cho các thế hệ mai sau.
-    </p>
-
-    <div class="footer">Ban Gia phả dòng họ Lê Đình</div>
-  </div>
+<h2 style="text-align:center">LỜI GIỚI THIỆU</h2>
+<p>Gia phả là sợi dây nối liền các thế hệ, là nơi lưu giữ cội nguồn, công đức tổ tiên và truyền thống của dòng họ qua bao đời.</p>
+<p>Dòng họ Lê chúng ta lấy <b>Thủy tổ là Cụ Lê Đình Cai</b>, con trai của <b>Hoàng thân Lê Duy Mật</b>, làm gốc.</p>
+<p>Gia phả điện tử này được xây dựng nhằm gìn giữ truyền thống – kết nối con cháu – truyền lại cho mai sau.</p>
+<div class="footer">Ban Gia phả dòng họ Lê Đình</div>
 </div>
 
 <!-- QUẢN LÝ -->
@@ -103,8 +61,10 @@ svg{width:4000px;height:2500px}
 <div id="form">
 <b>Thêm / chỉnh sửa thành viên</b><br><br>
 
-<label>Thành viên đang sửa:</label>
-<select id="editSelect"></select><br>
+<label>Thủy Tổ:</label>
+<select id="editSelect">
+  <option value="">(Không chọn – đang thêm con)</option>
+</select><br>
 
 <label>Cha (để sinh con):</label>
 <select id="parentSelect"></select><br>
@@ -141,7 +101,7 @@ function showPage(id){
  document.getElementById(id).classList.add('active');
 }
 
-/* ===== DỮ LIỆU ===== */
+/* ===== DATA ===== */
 let data={
  id:1,
  name:"Thủy Tổ – Lê Đình Cai",
@@ -151,7 +111,7 @@ let data={
 };
 let idCounter=2;
 
-/* ===== TIỆN ÍCH ===== */
+/* ===== UTILS ===== */
 function allNodes(n,a=[]){
  a.push(n);
  (n.children||[]).forEach(c=>allNodes(c,a));
@@ -160,13 +120,12 @@ function allNodes(n,a=[]){
 
 /* ===== SELECT ===== */
 function refreshSelects(){
- editSelect.innerHTML="";
+ editSelect.innerHTML='<option value="">(Không chọn – đang thêm con)</option>';
  parentSelect.innerHTML="";
  allNodes(data).forEach(n=>{
    editSelect.add(new Option(n.name,n.id));
    parentSelect.add(new Option(n.name+" (Đời "+n.doi+")",n.id));
  });
- editSelect.value="";
 }
 
 /* ===== ADD ===== */
@@ -202,7 +161,7 @@ function updatePerson(){
  clearForm();
  refreshSelects();
  draw();
- alert("Đã cập nhật trực tiếp trên cây");
+ alert("Đã cập nhật trên cây");
 }
 
 /* ===== FORM ===== */
@@ -211,10 +170,11 @@ function clearForm(){
  editSelect.value="";
 }
 
-/* ===== LOAD ===== */
+/* ===== LOAD EDIT ===== */
 editSelect.onchange=function(){
- let p=allNodes(data).find(n=>n.id==this.value);
- if(!p) return;
+ let id=Number(this.value);
+ if(!id){clearForm();return;}
+ let p=allNodes(data).find(n=>n.id===id);
  nameInput.value=p.name;
  orderInput.value=p.order||"";
  birthInput.value=p.birth||"";
@@ -242,7 +202,7 @@ function draw(){
  node.append("rect").attr("x",-110).attr("y",-45).attr("width",220).attr("height",90);
  node.append("text").attr("y",-20).attr("text-anchor","middle").text(d=>d.data.name);
  node.append("text").attr("y",-5).attr("text-anchor","middle")
-   .text(d=>d.data.id==1?"Thủy Tổ":"Đời "+d.data.doi+" – Con "+d.data.order);
+   .text(d=>d.data.id==1?"":"Đời "+d.data.doi+" – Con "+d.data.order);
  node.append("text").attr("y",12).attr("text-anchor","middle").text(d=>d.data.gio||"");
 }
 
