@@ -26,8 +26,8 @@ h1 {
 }
 
 svg {
-  width: 3000px;
-  height: 2000px;
+  width: 5000px;
+  height: 3000px;
 }
 
 .link {
@@ -72,9 +72,9 @@ fetch("data-gia-pha.json")
 
     const svg = d3.select("svg")
       .append("g")
-      .attr("transform", "translate(120,600)");
+      .attr("transform", "translate(150,1500)");
 
-    const tree = d3.tree().nodeSize([90, 240]);
+    const tree = d3.tree().nodeSize([90, 260]);
     const root = d3.hierarchy(data);
     tree(root);
 
