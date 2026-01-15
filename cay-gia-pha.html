@@ -4,183 +4,136 @@
 <meta charset="UTF-8">
 <title>Gia phả dòng họ Lê Đình</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script src="https://d3js.org/d3.v7.min.js"></script>
 
 <style>
 body{
-  font-family:"Times New Roman",serif;
-  margin:0;padding:10px;
+  font-family: "Times New Roman", serif;
+  margin:0;
+  padding:0;
+  background:#fff;
+  color:#000;
 }
-h1{text-align:center}
-nav{text-align:center;margin-bottom:15px}
-nav button{margin:0 5px}
-section{display:none}
-section.active{display:block}
-#intro{max-width:900px;margin:auto;line-height:1.7}
 
-#form{
-  border:1px solid #ccc;
-  padding:10px;
-  margin-bottom:10px;
-  background:#f9f9f9;
+header{
+  text-align:center;
+  padding:20px 10px 10px;
+  border-bottom:1px solid #ccc;
 }
-label{display:inline-block;width:100px}
-input,select{margin:4px 0}
 
-.wrapper{
-  width:100%;
-  height:75vh;
-  overflow:auto;
-  border:1px solid #ccc;
+h1{
+  margin:0;
+  font-size:30px;
+  letter-spacing:1px;
 }
-svg{width:3000px;height:2000px}
 
-.link{fill:none;stroke:#999}
-.node rect{fill:#fff;stroke:#333;rx:6;ry:6}
-.name{text-anchor:middle;font-weight:bold;font-size:13px}
-.doi{text-anchor:middle;font-size:11px}
-.note{text-anchor:middle;font-size:10px;font-style:italic}
+.nav{
+  margin-top:10px;
+}
+
+.nav a{
+  display:inline-block;
+  margin:0 6px;
+  padding:6px 12px;
+  border:1px solid #888;
+  border-radius:4px;
+  text-decoration:none;
+  color:#000;
+  font-size:14px;
+}
+
+.nav a:hover{
+  background:#f0f0f0;
+}
+
+.main{
+  max-width:900px;
+  margin:30px auto;
+  padding:0 20px;
+}
+
+.cover{
+  text-align:center;
+  margin-bottom:25px;
+}
+
+.cover img{
+  max-width:180px;
+  border:1px solid #999;
+  padding:6px;
+}
+
+.section-title{
+  font-size:22px;
+  font-weight:bold;
+  margin-bottom:15px;
+}
+
+.intro{
+  font-size:17px;
+  line-height:1.8;
+  text-align:justify;
+}
+
+.intro ul{
+  margin:10px 0 10px 30px;
+}
+
+.footer{
+  margin-top:30px;
+  padding-top:15px;
+  border-top:1px solid #ccc;
+  font-weight:bold;
+  text-align:right;
+}
 </style>
 </head>
 
 <body>
 
-<h1>GIA PHẢ DÒNG HỌ LÊ ĐÌNH</h1>
+<header>
+  <h1>GIA PHẢ DÒNG HỌ LÊ ĐÌNH</h1>
+  <div class="nav">
+    <a href="index.html">🏠 Trang chủ</a>
+    <a href="cay-gia-pha.html">✏️ Quản lý gia phả</a>
+  </div>
+</header>
 
-<nav>
-  <button onclick="show('home')">🏠 Trang chủ</button>
-  <button onclick="show('manage')">✏️ Quản lý gia phả</button>
-</nav>
+<div class="main">
 
-<!-- TRANG CHỦ -->
-<section id="home" class="active">
-<div id="intro">
-<h2>LỜI GIỚI THIỆU</h2>
-<p>
-Gia phả là sợi dây nối liền các thế hệ, là nơi lưu giữ cội nguồn, công đức tổ tiên
-và truyền thống của dòng họ qua bao đời.
-</p>
-<p>
-Dòng họ Lê chúng ta lấy <b>Thủy tổ là Cụ Lê Đình Cai</b>,
-con trai của Hoàng thân <b>Lê Duy Mật</b>, làm gốc.
-Từ Thủy tổ, các đời con cháu tiếp nối sinh sôi, lập nghiệp,
-đóng góp cho gia đình, quê hương và đất nước.
-</p>
-<p>
-Trải qua thời gian, nhiều tư liệu gia phả bằng giấy đã mai một,
-phân tán hoặc khó bảo quản. Việc xây dựng Gia phả điện tử nhằm:
-</p>
-<ul>
-<li>Gìn giữ đầy đủ, chính xác thông tin các thế hệ trong dòng họ</li>
-<li>Giúp con cháu tra cứu cội nguồn, vai vế, thứ bậc</li>
-<li>Thuận tiện tổ chức giỗ tổ, giỗ chi, tưởng nhớ tổ tiên</li>
-<li>Kết nối con cháu trong và ngoài nước</li>
-</ul>
-<p>
-Gia phả điện tử này được xây dựng trên tinh thần
-<b>tôn trọng lịch sử – giữ gìn truyền thống – truyền lại cho mai sau</b>.
-</p>
-<p>
-Nguyện mong con cháu đời sau luôn nhớ công lao tổ tiên,
-giữ gìn nề nếp gia phong, đoàn kết yêu thương,
-cùng nhau làm rạng danh dòng họ.
-</p>
-<p><b>
-Gia phả này là tài sản chung của toàn thể dòng họ,
-dùng cho mục đích tưởng nhớ tổ tiên và giáo dục truyền thống.
-</b></p>
+  <!-- ẢNH ĐẠI DIỆN -->
+  <div class="cover">
+    <!-- BÁC CHỈ CẦN THAY FILE ẢNH NÀY -->
+    <img src="anh-dai-dien.jpg" alt="Gia phả dòng họ Lê Đình">
+  </div>
+
+  <!-- LỜI GIỚI THIỆU -->
+  <div class="section-title">LỜI GIỚI THIỆU</div>
+
+  <div class="intro">
+    Gia phả là sợi dây nối liền các thế hệ, là nơi lưu giữ cội nguồn, công đức tổ tiên và truyền thống của dòng họ qua bao đời.<br><br>
+
+    Dòng họ Lê chúng ta lấy Thủy tổ là <b>Cụ Lê Đình Cai</b>, con trai của Hoàng thân <b>Lê Duy Mật</b>, làm gốc. Từ Thủy tổ, các đời con cháu tiếp nối sinh sôi, lập nghiệp, đóng góp cho gia đình, quê hương và đất nước.<br><br>
+
+    Trải qua thời gian, nhiều tư liệu gia phả bằng giấy đã mai một, phân tán hoặc khó bảo quản. Việc xây dựng Gia phả điện tử nhằm:
+    <ul>
+      <li>Gìn giữ đầy đủ, chính xác thông tin các thế hệ trong dòng họ</li>
+      <li>Giúp con cháu dễ dàng tra cứu cội nguồn, vai vế, thứ bậc</li>
+      <li>Thuận tiện trong việc tổ chức giỗ tổ, giỗ chi, tưởng nhớ tổ tiên</li>
+      <li>Kết nối con cháu trong và ngoài nước, dù ở bất cứ nơi đâu</li>
+    </ul>
+
+    Gia phả điện tử này được xây dựng trên tinh thần tôn trọng lịch sử – giữ gìn truyền thống – truyền lại cho mai sau. Mọi thông tin đều được Ban gia phả rà soát, bổ sung và cập nhật cẩn trọng.<br><br>
+
+    Nguyện mong con cháu đời sau, khi xem gia phả, luôn nhớ đến công lao tổ tiên, giữ gìn nề nếp gia phong, đoàn kết yêu thương, cùng nhau làm rạng danh dòng họ.<br><br>
+
+    Gia phả này là tài sản chung của toàn thể dòng họ, được lưu giữ và sử dụng cho mục đích tưởng nhớ tổ tiên và giáo dục truyền thống cho các thế hệ mai sau.
+  </div>
+
+  <div class="footer">
+    Ban Gia phả dòng họ Lê Đình
+  </div>
+
 </div>
-</section>
-
-<!-- QUẢN LÝ -->
-<section id="manage">
-<div id="form">
-<label>Cha:</label>
-<select id="parent"></select><br>
-<label>Tên:</label>
-<input id="name"><br>
-<label>Thứ tự:</label>
-<input id="order" type="number" min="1"><br>
-<button onclick="add()">➕ Thêm</button>
-</div>
-
-<div class="wrapper">
-<svg></svg>
-</div>
-</section>
-
-<script>
-function show(id){
-  document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
-}
-
-/* ===== DATA ===== */
-let data = JSON.parse(localStorage.getItem("giapha")) || {
-  id:1,
-  name:"Lê Đình Cai",
-  doi:1,
-  role:"Thủy tổ",
-  children:[]
-};
-let idc = Date.now();
-
-function all(n,a=[]){a.push(n);(n.children||[]).forEach(c=>all(c,a));return a}
-
-function save(){localStorage.setItem("giapha",JSON.stringify(data))}
-
-/* ===== FORM ===== */
-function refresh(){
-  parent.innerHTML="";
-  all(data).forEach(n=>{
-    let o=document.createElement("option");
-    o.value=n.id;
-    o.text=`${n.name} (${n.role||"Đời "+n.doi})`;
-    parent.appendChild(o);
-  });
-}
-
-/* ===== ADD ===== */
-function add(){
-  let p=all(data).find(n=>n.id==parent.value);
-  if(!name.value)return alert("Nhập tên");
-  p.children.push({
-    id:++idc,
-    name:name.value,
-    doi:p.doi+1,
-    role:`Con thứ ${order.value||"?"}`,
-    children:[]
-  });
-  name.value="";order.value="";
-  save();refresh();draw();
-}
-
-/* ===== DRAW ===== */
-function draw(){
-  d3.select("svg").selectAll("*").remove();
-  let g=d3.select("svg").append("g").attr("transform","translate(150,500)");
-  let r=d3.hierarchy(data);
-  d3.tree().nodeSize([90,220])(r);
-
-  g.selectAll(".link")
-    .data(r.links())
-    .enter().append("path")
-    .attr("class","link")
-    .attr("d",d3.linkHorizontal().x(d=>d.y).y(d=>d.x));
-
-  let n=g.selectAll(".node")
-    .data(r.descendants())
-    .enter().append("g")
-    .attr("class","node")
-    .attr("transform",d=>`translate(${d.y},${d.x})`);
-
-  n.append("rect").attr("x",-70).attr("y",-32).attr("width",140).attr("height",64);
-  n.append("text").attr("class","name").attr("y",-8).text(d=>d.data.name);
-  n.append("text").attr("class","doi").attr("y",10).text(d=>d.data.role||("Đời "+d.data.doi));
-}
-
-refresh();draw();
-</script>
 
 </body>
 </html>
