@@ -18,16 +18,32 @@ h1 {
   margin-bottom: 10px;
 }
 
+#form {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 10px;
+  background: #f9f9f9;
+}
+
+label {
+  display: inline-block;
+  width: 90px;
+}
+
+input, select, button {
+  margin: 5px 0;
+}
+
 .wrapper {
   width: 100%;
-  height: 90vh;
+  height: 80vh;
   overflow: auto;
   border: 1px solid #ccc;
 }
 
 svg {
-  width: 5000px;
-  height: 3000px;
+  width: 3000px;
+  height: 2000px;
 }
 
 .link {
@@ -59,58 +75,128 @@ svg {
 </head>
 
 <body>
+
 <h1>GIA PHẢ DÒNG HỌ LÊ ĐÌNH</h1>
+
+<div id="form">
+  <label>Cha:</label>
+  <select id="parentSelect"></select><br>
+
+  <label>Tên con:</label>
+  <input id="nameInput" placeholder="Ví dụ: Cháu B"><br>
+
+  <button onclick="addPerson()">➕ Thêm người</button>
+</div>
 
 <div class="wrapper">
   <svg></svg>
 </div>
 
 <script>
-fetch("data-gia-pha.json")
-  .then(res => res.json())
-  .then(data => {
+/* ========= DỮ LIỆU GỐC ========= */
+let data = {
+  id: 1,
+  name: "Lê Đình Cai",
+  doi: 1,
+  children: []
+};
 
-    const svg = d3.select("svg")
-      .append("g")
-      .attr("transform", "translate(150,1500)");
+let idCounter = 2;
 
-    const tree = d3.tree().nodeSize([90, 260]);
-    const root = d3.hierarchy(data);
-    tree(root);
+/* ========= TIỆN ÍCH ========= */
+function getAllNodes(node, arr = []) {
+  arr.push(node);
+  if (node.children) {
+    node.children.forEach(c => getAllNodes(c, arr));
+  }
+  return arr;
+}
 
-    svg.selectAll(".link")
-      .data(root.links())
-      .enter()
-      .append("path")
-      .attr("class", "link")
-      .attr("d", d3.linkHorizontal()
-        .x(d => d.y)
-        .y(d => d.x)
-      );
-
-    const node = svg.selectAll(".node")
-      .data(root.descendants())
-      .enter()
-      .append("g")
-      .attr("class", "node")
-      .attr("transform", d => `translate(${d.y},${d.x})`);
-
-    node.append("rect")
-      .attr("x", -75)
-      .attr("y", -30)
-      .attr("width", 150)
-      .attr("height", 60);
-
-    node.append("text")
-      .attr("class", "name")
-      .attr("y", -6)
-      .text(d => d.data.name);
-
-    node.append("text")
-      .attr("class", "doi")
-      .attr("y", 14)
-      .text(d => "Đời " + d.data.doi);
+/* ========= FORM ========= */
+function refreshSelect() {
+  const select = document.getElementById("parentSelect");
+  select.innerHTML = "";
+  getAllNodes(data).forEach(n => {
+    const opt = document.createElement("option");
+    opt.value = n.id;
+    opt.text = `${n.name} (Đời ${n.doi})`;
+    select.appendChild(opt);
   });
+}
+
+/* ========= THÊM NGƯỜI ========= */
+function addPerson() {
+  const parentId = Number(parentSelect.value);
+  const name = nameInput.value.trim();
+  if (!name) return alert("Nhập tên!");
+
+  const nodes = getAllNodes(data);
+  const parent = nodes.find(n => n.id === parentId);
+
+  if (!parent.children) parent.children = [];
+
+  parent.children.push({
+    id: idCounter++,
+    name,
+    doi: parent.doi + 1,
+    children: []
+  });
+
+  nameInput.value = "";
+  refreshSelect();
+  draw();
+}
+
+/* ========= VẼ CÂY ========= */
+function draw() {
+  d3.select("svg").selectAll("*").remove();
+
+  const svg = d3.select("svg")
+    .append("g")
+    .attr("transform", "translate(150,500)");
+
+  const root = d3.hierarchy(data);
+  const tree = d3.tree().nodeSize([80, 220]);
+  tree(root);
+
+  svg.selectAll(".link")
+    .data(root.links())
+    .enter()
+    .append("path")
+    .attr("class", "link")
+    .attr("d", d3.linkHorizontal()
+      .x(d => d.y)
+      .y(d => d.x)
+    );
+
+  const node = svg.selectAll(".node")
+    .data(root.descendants())
+    .enter()
+    .append("g")
+    .attr("class", "node")
+    .attr("transform", d => `translate(${d.y},${d.x})`);
+
+  node.append("rect")
+    .attr("x", -70)
+    .attr("y", -28)
+    .attr("width", 140)
+    .attr("height", 56);
+
+  node.append("text")
+    .attr("class", "name")
+    .attr("y", -6)
+    .text(d => d.data.name);
+
+  node.append("text")
+    .attr("class", "doi")
+    .attr("y", 14)
+    .text(d => "Đời " + d.data.doi);
+}
+
+/* ========= KHỞI TẠO ========= */
+refreshSelect();
+draw();
 </script>
+
 </body>
 </html>
