@@ -10,24 +10,51 @@
 body {
   font-family: "Times New Roman", serif;
   margin: 0;
-  padding: 10px;
+  padding: 0;
 }
 
-h1 {
+header {
   text-align: center;
-  margin-bottom: 10px;
+  padding: 15px;
+  border-bottom: 1px solid #ccc;
+}
+
+nav {
+  text-align: center;
+  padding: 10px;
+  background: #f3f3f3;
+}
+
+nav button {
+  margin: 0 5px;
+  padding: 6px 12px;
+}
+
+section {
+  display: none;
+  padding: 15px;
+}
+
+section.active {
+  display: block;
+}
+
+#intro {
+  max-width: 900px;
+  margin: auto;
+  line-height: 1.6;
 }
 
 #form {
   border: 1px solid #ccc;
   padding: 10px;
-  margin-bottom: 10px;
   background: #f9f9f9;
+  margin-bottom: 10px;
 }
 
 label {
   display: inline-block;
-  width: 90px;
+  width: 100px;
 }
 
 input, select, button {
@@ -36,7 +63,7 @@ input, select, button {
 
 .wrapper {
   width: 100%;
-  height: 80vh;
+  height: 75vh;
   overflow: auto;
   border: 1px solid #ccc;
 }
@@ -81,29 +108,66 @@ svg {
 
 <body>
 
-<h1>GIA PHẢ DÒNG HỌ LÊ ĐÌNH</h1>
+<header>
+  <h1>GIA PHẢ DÒNG HỌ LÊ ĐÌNH</h1>
+</header>
 
-<div id="form">
-  <label>Cha:</label>
-  <select id="parentSelect"></select><br>
+<nav>
+  <button onclick="showSection('intro')">🏠 Trang chủ</button>
+  <button onclick="showSection('manage')">✏️ Quản lý gia phả</button>
+</nav>
 
-  <label>Tên:</label>
-  <input id="nameInput" placeholder="Ví dụ: Lê Đình Huy"><br>
+<!-- ========== TRANG CHỦ ========== -->
+<section id="intro" class="active">
+  <h2>Lời giới thiệu</h2>
+  <p>
+    Gia phả dòng họ Lê Đình được lập nhằm ghi chép, lưu giữ và kế thừa thông tin
+    về các thế hệ trong dòng họ, bắt đầu từ Thủy tổ <b>Lê Đình Cai</b>.
+  </p>
+  <p>
+    Gia phả hiện đang được cập nhật dần theo từng đời. Việc biên soạn nhằm giúp
+    con cháu đời sau hiểu rõ cội nguồn, thứ bậc, quan hệ huyết thống và truyền
+    thống của dòng họ.
+  </p>
+  <p>
+    Gia phả này mang tính mở, có thể tiếp tục bổ sung các thế hệ tiếp theo trong
+    tương lai.
+  </p>
+  <p>
+    <i>Người biên soạn & cập nhật: Dòng họ Lê Đình</i>
+  </p>
+</section>
 
-  <label>Thứ tự:</label>
-  <input id="thuTuInput" type="number" min="1" placeholder="1 = trưởng"><br>
+<!-- ========== QUẢN LÝ GIA PHẢ ========== -->
+<section id="manage">
+  <div id="form">
+    <label>Cha:</label>
+    <select id="parentSelect"></select><br>
 
-  <button onclick="addPerson()">➕ Thêm người</button>
-  <button onclick="updatePerson()">✏️ Cập nhật</button>
-</div>
+    <label>Tên:</label>
+    <input id="nameInput" placeholder="Ví dụ: Lê Đình Huy"><br>
 
-<div class="wrapper">
-  <svg></svg>
-</div>
+    <label>Thứ tự:</label>
+    <input id="thuTuInput" type="number" min="1" placeholder="1 = con trưởng"><br>
+
+    <button onclick="addPerson()">➕ Thêm</button>
+    <button onclick="updatePerson()">✏️ Cập nhật</button>
+  </div>
+
+  <div class="wrapper">
+    <svg></svg>
+  </div>
+</section>
 
 <script>
-/* ========= DỮ LIỆU GỐC ========= */
-let data = {
+/* ===== CHUYỂN TAB ===== */
+function showSection(id) {
+  document.querySelectorAll("section").forEach(s => s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+
+/* ===== DỮ LIỆU ===== */
+let data = JSON.parse(localStorage.getItem("giapha")) || {
   id: 1,
   name: "Lê Đình Cai",
   doi: 1,
@@ -111,40 +175,34 @@ let data = {
   children: []
 };
 
-let idCounter = 2;
+let idCounter = Date.now();
 let selectedNode = null;
 
-/* ========= TIỆN ÍCH ========= */
+/* ===== TIỆN ÍCH ===== */
 function getAllNodes(node, arr = []) {
   arr.push(node);
-  if (node.children) {
-    node.children.forEach(c => getAllNodes(c, arr));
-  }
+  if (node.children) node.children.forEach(c => getAllNodes(c, arr));
   return arr;
 }
 
-/* ========= FORM ========= */
+/* ===== FORM ===== */
 function refreshSelect() {
-  const select = document.getElementById("parentSelect");
-  select.innerHTML = "";
+  parentSelect.innerHTML = "";
   getAllNodes(data).forEach(n => {
     const opt = document.createElement("option");
     opt.value = n.id;
     opt.text = `${n.name} (Đời ${n.doi})`;
-    select.appendChild(opt);
+    parentSelect.appendChild(opt);
   });
 }
 
-/* ========= THÊM NGƯỜI ========= */
+/* ===== THÊM ===== */
 function addPerson() {
-  const parentId = Number(parentSelect.value);
+  const parent = getAllNodes(data).find(n => n.id == parentSelect.value);
   const name = nameInput.value.trim();
   const thuTu = thuTuInput.value ? Number(thuTuInput.value) : null;
 
-  if (!name) return alert("Nhập tên!");
-
-  const parent = getAllNodes(data).find(n => n.id === parentId);
-  if (!parent.children) parent.children = [];
+  if (!name) return alert("Chưa nhập tên!");
 
   parent.children.push({
     id: idCounter++,
@@ -154,87 +212,57 @@ function addPerson() {
     children: []
   });
 
-  nameInput.value = "";
-  thuTuInput.value = "";
+  save();
+}
+
+/* ===== CẬP NHẬT ===== */
+function updatePerson() {
+  if (!selectedNode) return alert("Chưa chọn người!");
+  selectedNode.data.name = nameInput.value.trim();
+  selectedNode.data.thuTu = thuTuInput.value ? Number(thuTuInput.value) : null;
+  save();
+}
+
+/* ===== LƯU ===== */
+function save() {
+  localStorage.setItem("giapha", JSON.stringify(data));
   refreshSelect();
   draw();
 }
 
-/* ========= CẬP NHẬT ========= */
-function updatePerson() {
-  if (!selectedNode) {
-    alert("Chưa chọn người để sửa (click vào ô trên cây)");
-    return;
-  }
-
-  const name = nameInput.value.trim();
-  const thuTu = thuTuInput.value ? Number(thuTuInput.value) : null;
-
-  if (!name) return alert("Tên không được trống!");
-
-  selectedNode.data.name = name;
-  selectedNode.data.thuTu = thuTu;
-
-  draw();
-}
-
-/* ========= VẼ CÂY ========= */
+/* ===== VẼ ===== */
 function draw() {
   d3.select("svg").selectAll("*").remove();
 
-  const svg = d3.select("svg")
-    .append("g")
-    .attr("transform", "translate(150,500)");
-
+  const svg = d3.select("svg").append("g").attr("transform","translate(150,500)");
   const root = d3.hierarchy(data);
-  const tree = d3.tree().nodeSize([80, 220]);
-  tree(root);
+  d3.tree().nodeSize([80,220])(root);
 
   svg.selectAll(".link")
     .data(root.links())
-    .enter()
-    .append("path")
-    .attr("class", "link")
-    .attr("d", d3.linkHorizontal()
-      .x(d => d.y)
-      .y(d => d.x)
-    );
+    .enter().append("path")
+    .attr("class","link")
+    .attr("d", d3.linkHorizontal().x(d=>d.y).y(d=>d.x));
 
   const node = svg.selectAll(".node")
     .data(root.descendants())
-    .enter()
-    .append("g")
-    .attr("class", d => d === selectedNode ? "node selected" : "node")
-    .attr("transform", d => `translate(${d.y},${d.x})`)
-    .on("click", (e, d) => {
-      selectedNode = d;
-      nameInput.value = d.data.name;
-      thuTuInput.value = d.data.thuTu || "";
+    .enter().append("g")
+    .attr("class", d => d===selectedNode?"node selected":"node")
+    .attr("transform", d=>`translate(${d.y},${d.x})`)
+    .on("click",(e,d)=>{
+      selectedNode=d;
+      nameInput.value=d.data.name;
+      thuTuInput.value=d.data.thuTu||"";
       draw();
     });
 
-  node.append("rect")
-    .attr("x", -70)
-    .attr("y", -28)
-    .attr("width", 140)
-    .attr("height", 56);
-
-  node.append("text")
-    .attr("class", "name")
-    .attr("y", -6)
-    .text(d => d.data.name);
-
-  node.append("text")
-    .attr("class", "doi")
-    .attr("y", 14)
-    .text(d => {
-      if (d.data.thuTu)
-        return `Con thứ ${d.data.thuTu} – Đời ${d.data.doi}`;
-      return `Đời ${d.data.doi}`;
-    });
+  node.append("rect").attr("x",-70).attr("y",-28).attr("width",140).attr("height",56);
+  node.append("text").attr("class","name").attr("y",-6).text(d=>d.data.name);
+  node.append("text").attr("class","doi").attr("y",14)
+    .text(d=> d.data.thuTu ? `Con thứ ${d.data.thuTu} – Đời ${d.data.doi}` : `Đời ${d.data.doi}`);
 }
 
-/* ========= KHỞI TẠO ========= */
+/* ===== KHỞI TẠO ===== */
 refreshSelect();
 draw();
 </script>
