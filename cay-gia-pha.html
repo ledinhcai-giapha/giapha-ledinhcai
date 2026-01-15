@@ -16,85 +16,85 @@
 
   h1 {
     text-align: center;
-    margin-bottom: 20px;
+    margin: 10px 0 20px;
   }
 
   svg {
-    width: 6000px;
-    height: 95vh;
+    width: 100%;
+    height: 85vh;
+    border: 1px solid #ddd;
   }
 
   .link {
     fill: none;
     stroke: #999;
-    stroke-width: 1.4px;
+    stroke-width: 1.2px;
   }
 
   .node rect {
+    fill: #fff;
     stroke: #333;
-    stroke-width: 1.4px;
+    stroke-width: 1.2px;
     rx: 6;
     ry: 6;
-  }
-
-  .node text {
-    text-anchor: middle;
-    pointer-events: none;
   }
 
   .name {
     font-size: 13px;
     font-weight: bold;
+    text-anchor: middle;
   }
 
   .doi {
     font-size: 11px;
     fill: #555;
+    text-anchor: middle;
   }
 </style>
 </head>
 
 <body>
 <h1>GIA PHẢ DÒNG HỌ LÊ ĐÌNH</h1>
-<svg></svg>
+
+<svg viewBox="0 0 2000 1200" preserveAspectRatio="xMinYMin meet"></svg>
 
 <script>
 const MAX_DOI = 20;
 
-function buildTree(node, doi) {
+// Tạo cây mẫu – KHÔNG BAO GIỜ RỖNG
+function build(node, doi) {
   if (doi >= MAX_DOI) return;
-
   node.children = [];
-  const soCon = doi === 1 ? 5 : 2; // thủy tổ nhiều con, sau ít hơn
+
+  const soCon = doi === 1 ? 4 : 2;
 
   for (let i = 1; i <= soCon; i++) {
     const child = {
-      name: `Đời ${doi + 1} – Con ${i}`,
+      name: `Con đời ${doi + 1} (${i})`,
       doi: doi + 1
     };
     node.children.push(child);
-    buildTree(child, doi + 1);
+    build(child, doi + 1);
   }
 }
 
-// GỐC DUY NHẤT
 const data = {
   name: "Lê Đình Cai",
   doi: 1
 };
 
-buildTree(data, 1);
+build(data, 1);
 
-// VẼ CÂY
+// Vẽ
 const svg = d3.select("svg")
   .append("g")
-  .attr("transform", "translate(200,80)");
+  .attr("transform", "translate(100,600)");
 
-const tree = d3.tree().nodeSize([120, 300]);
+const tree = d3.tree().nodeSize([90, 180]);
 const root = d3.hierarchy(data);
 tree(root);
 
-// Nhánh
+// Link
 svg.selectAll(".link")
   .data(root.links())
   .enter()
@@ -114,11 +114,10 @@ const node = svg.selectAll(".node")
   .attr("transform", d => `translate(${d.y},${d.x})`);
 
 node.append("rect")
-  .attr("x", -85)
-  .attr("y", -32)
-  .attr("width", 170)
-  .attr("height", 64)
-  .attr("fill", "#fff");
+  .attr("x", -70)
+  .attr("y", -28)
+  .attr("width", 140)
+  .attr("height", 56);
 
 node.append("text")
   .attr("class", "name")
@@ -127,7 +126,7 @@ node.append("text")
 
 node.append("text")
   .attr("class", "doi")
-  .attr("y", 16)
+  .attr("y", 14)
   .text(d => "Đời " + d.data.doi);
 </script>
 </body>
