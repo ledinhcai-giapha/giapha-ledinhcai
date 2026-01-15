@@ -27,7 +27,7 @@ h1 {
 
 svg {
   width: 3000px;
-  height: 2000px;
+  height: 1600px;
 }
 
 .link {
@@ -37,7 +37,6 @@ svg {
 }
 
 .node rect {
-  fill: #fff;
   stroke: #333;
   stroke-width: 1.2px;
   rx: 6;
@@ -66,19 +65,65 @@ svg {
 </div>
 
 <script>
-// ===== DỮ LIỆU GIA PHẢ (NHÚNG TRỰC TIẾP – KHÔNG FETCH) =====
-const data = {
-  name: "Lê Đình Cai",
-  doi: 1,
-  children: [
-    {
-      name: "Con trai trưởng",
-      doi: 2,
-      children: [
-        {
-          name: "Cháu A",
-          doi: 3,
-          children: [
-            { name: "Chắt A1", doi: 4 },
-            { name: "Chắt A2", doi: 4 },
-            { name: "Chắt A3",
+// Màu theo chi
+const colorByChi = {
+  root: "#f2f2f2",
+  chi1: "#ffe0e0",
+  chi2: "#e0f0ff",
+  chi3: "#e0ffe8",
+  chi4: "#fff5d9",
+  chi5: "#f3e0ff"
+};
+
+// 🔴 DÒNG QUAN TRỌNG NHẤT
+fetch("./data-gia-pha.json")
+.then(res => res.json())
+.then(data => {
+
+  const svg = d3.select("svg")
+    .append("g")
+    .attr("transform", "translate(150, 400)");
+
+  const tree = d3.tree().nodeSize([80, 240]);
+  const root = d3.hierarchy(data);
+  tree(root);
+
+  // Nhánh
+  svg.selectAll(".link")
+    .data(root.links())
+    .enter()
+    .append("path")
+    .attr("class", "link")
+    .attr("d", d3.linkHorizontal()
+      .x(d => d.y)
+      .y(d => d.x)
+    );
+
+  // Node
+  const node = svg.selectAll(".node")
+    .data(root.descendants())
+    .enter()
+    .append("g")
+    .attr("class", "node")
+    .attr("transform", d => `translate(${d.y},${d.x})`);
+
+  node.append("rect")
+    .attr("x", -70)
+    .attr("y", -28)
+    .attr("width", 140)
+    .attr("height", 56)
+    .attr("fill", d => colorByChi[d.data.chi] || "#ffffff");
+
+  node.append("text")
+    .attr("class", "name")
+    .attr("y", -6)
+    .text(d => d.data.name || "");
+
+  node.append("text")
+    .attr("class", "doi")
+    .attr("y", 14)
+    .text(d => d.data.doi ? "Đời " + d.data.doi : "");
+});
+</script>
+</body>
+</html>
