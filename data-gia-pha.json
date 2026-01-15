@@ -1,21 +1,51 @@
 {
   "name": "Lê Đình Cai",
-  "title": "Thủy tổ",
+  "doi": 1,
+  "chi": "Thủy tổ",
   "children": [
     {
       "name": "Con trai trưởng",
-      "title": "Đời 2",
+      "doi": 2,
+      "chi": "Chi 1",
       "children": [
-        { "name": "Cháu A", "title": "Đời 3" },
-        { "name": "Cháu B", "title": "Đời 3" }
+        {
+          "name": "Cháu trưởng",
+          "doi": 3,
+          "chi": "Chi 1",
+          "children": [
+            { "name": "Chắt A", "doi": 4, "chi": "Chi 1" },
+            { "name": "Chắt B", "doi": 4, "chi": "Chi 1" }
+          ]
+        }
       ]
     },
     {
       "name": "Con trai thứ",
-      "title": "Đời 2",
+      "doi": 2,
+      "chi": "Chi 2",
       "children": [
-        { "name": "Cháu C", "title": "Đời 3" }
+        { "name": "Cháu C", "doi": 3, "chi": "Chi 2" }
       ]
+    },
+    {
+      "name": "Con trai ba",
+      "doi": 2,
+      "chi": "Chi 3"
+    },
+    {
+      "name": "Con trai tư",
+      "doi": 2,
+      "chi": "Chi 4"
+    },
+    {
+      "name": "Con trai năm",
+      "doi": 2,
+      "chi": "Chi 5"
+    },
+    {
+      "name": "Con trai sáu",
+      "doi": 2,
+      "chi": "Chi 6"
     }
   ]
 }
