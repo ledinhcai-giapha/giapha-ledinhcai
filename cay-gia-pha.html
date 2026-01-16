@@ -206,55 +206,85 @@ function clear(){
 }
 
 /* ===== DRAW (ĐÃ SỬA: HIỂN THỊ QUÊ QUÁN) ===== */
+<script>
 function draw(){
- d3.select("svg").selectAll("*").remove();
- let g=d3.select("svg").append("g").attr("transform","translate(200,400)");
- let root=d3.hierarchy(data);
- d3.tree().nodeSize([130,260])(root);
+  d3.select("svg").selectAll("*").remove();
 
- g.selectAll(".link")
-  .data(root.links()).enter().append("path")
-  .attr("class","link")
-  .attr("d",d3.linkHorizontal().x(d=>d.y).y(d=>d.x));
+  let g = d3.select("svg")
+    .append("g")
+    .attr("transform","translate(200,400)");
 
- let node=g.selectAll(".node")
-  .data(root.descendants()).enter().append("g")
-  .attr("class","node")
-  .attr("transform",d=>`translate(${d.y},${d.x})`)
-  .on("click",(e,d)=>{
-    if(!isAdmin()||d.data.id===1) return;
-    selectedId=d.data.id;
-    nameInput.value=d.data.name;
-    orderInput.value=d.data.order||"";
-    birthInput.value=d.data.birth||"";
-    homeInput.value=d.data.home||"";
-    deathInput.value=d.data.gio||"";
-  });
+  let root = d3.hierarchy(data);
+  d3.tree().nodeSize([140,260])(root);
 
- node.append("rect")
-  .attr("x",-110).attr("y",-50)
-  .attr("width",220).attr("height",110);
+  /* VẼ ĐƯỜNG NỐI */
+  g.selectAll(".link")
+    .data(root.links())
+    .enter()
+    .append("path")
+    .attr("class","link")
+    .attr("d",d3.linkHorizontal()
+      .x(d=>d.y)
+      .y(d=>d.x)
+    );
 
- node.append("text")
-  .attr("y",-25).attr("text-anchor","middle")
-  .text(d=>d.data.name);
+  /* VẼ NODE */
+  let node = g.selectAll(".node")
+    .data(root.descendants())
+    .enter()
+    .append("g")
+    .attr("class","node")
+    .attr("transform",d=>`translate(${d.y},${d.x})`)
+    .on("click",(e,d)=>{
+      if(!isAdmin() || d.data.id===1) return;
+      selectedId=d.data.id;
+      nameInput.value=d.data.name||"";
+      orderInput.value=d.data.order||"";
+      birthInput.value=d.data.birth||"";
+      homeInput.value=d.data.home||"";
+      deathInput.value=d.data.gio||"";
+    });
 
- node.append("text")
-  .attr("y",-5).attr("text-anchor","middle")
-  .text(d=>d.data.id===1?"Thủy Tổ":"Đời "+d.data.doi+" – Con "+d.data.order);
+  node.append("rect")
+    .attr("x",-110)
+    .attr("y",-65)
+    .attr("width",220)
+    .attr("height",130);
 
- node.append("text")
-  .attr("y",15).attr("text-anchor","middle")
-  .text(d=>d.data.gio||"");
+  /* HỌ TÊN */
+  node.append("text")
+    .attr("y",-40)
+    .attr("text-anchor","middle")
+    .style("font-weight","bold")
+    .text(d=>d.data.name);
 
- node.append("text")
-  .attr("y",32).attr("text-anchor","middle")
-  .style("font-size","12px")
-  .style("font-style","italic")
-  .text(d=>d.data.home ? "Quê quán: " + d.data.home : "");
+  /* ĐỜI – CON */
+  node.append("text")
+    .attr("y",-22)
+    .attr("text-anchor","middle")
+    .text(d=>d.data.id===1 ? "Thủy Tổ" : `Đời ${d.data.doi} – Con ${d.data.order||""}`);
+
+  /* NĂM SINH */
+  node.append("text")
+    .attr("y",-4)
+    .attr("text-anchor","middle")
+    .style("font-size","12px")
+    .text(d=>d.data.birth ? `Năm sinh: ${d.data.birth}` : "");
+
+  /* QUÊ QUÁN */
+  node.append("text")
+    .attr("y",14)
+    .attr("text-anchor","middle")
+    .style("font-size","12px")
+    .text(d=>d.data.home ? `Quê: ${d.data.home}` : "");
+
+  /* NGÀY GIỖ */
+  node.append("text")
+    .attr("y",32)
+    .attr("text-anchor","middle")
+    .style("font-size","12px")
+    .text(d=>d.data.gio||"");
 }
-
-refresh(); draw();
 </script>
 </body>
 </html>
