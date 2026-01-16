@@ -41,7 +41,15 @@ label{display:inline-block;width:160px}
 input,select{width:260px;margin-bottom:6px}
 
 .wrapper{height:70vh;overflow:auto;border:1px solid #ccc}
-svg{width:4000px;height:2500px}
+svg{width:4000px;height:2500px}/* ===== TOUCH & SCROLL OPTIMIZE ===== */
+.wrapper{
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x pan-y;
+}
+
+svg{
+  max-width:none;
+}
 
 .node rect{fill:#fffdf8;stroke:#555;rx:10;ry:10}
 .link{fill:none;stroke:#999}
