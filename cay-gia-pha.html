@@ -87,27 +87,37 @@ function show(id){
 
 /* ===== ADMIN ===== */
 const ADMIN_PASSWORD="ledinh123";
+
 function isAdmin(){
  return localStorage.getItem("ledinh_admin")==="1";
 }
+
 function adminLogin(){
  let p=prompt("Nhập mật khẩu Admin:");
  if(p===ADMIN_PASSWORD){
    localStorage.setItem("ledinh_admin","1");
-   alert("Đăng nhập Admin thành công");
+   alert("Đã đăng nhập Admin");
+   location.reload();
  } else alert("Sai mật khẩu");
 }
 
+function adminLogout(){
+ localStorage.removeItem("ledinh_admin");
+ alert("Đã đăng xuất Admin");
+ location.reload();
+}
+
 /* ===== DATA ===== */
-let data=JSON.parse(localStorage.getItem("ledinh_data")||"null") || {
+let data = JSON.parse(localStorage.getItem("ledinh_data")) || {
  id:1,
  name:"Thủy Tổ – Lê Đình Cai",
  doi:1,
  gio:"Giỗ Tổ: 17 tháng Giêng",
  children:[]
 };
-let idCounter=Date.now();
+
 let selectedId=null;
+let idCounter=Date.now();
 
 function save(){
  localStorage.setItem("ledinh_data",JSON.stringify(data));
@@ -124,18 +134,19 @@ function nodes(n,a=[]){
 function refresh(){
  parentSelect.innerHTML="";
  nodes(data).forEach(n=>{
-  parentSelect.add(new Option(n.name+" (Đời "+n.doi+")",n.id));
+   parentSelect.add(new Option(n.name+" (Đời "+n.doi+")",n.id));
  });
 }
 
 /* ===== ADD ===== */
 function addChild(){
  if(!isAdmin()){
-   alert("Bạn phải đăng nhập Admin");
+   alert("Bạn chưa đăng nhập Admin");
    return;
  }
  let parent=nodes(data).find(n=>n.id==parentSelect.value);
- if(!nameInput.value){alert("Nhập họ tên");return;}
+ if(!nameInput.value){ alert("Nhập họ tên"); return; }
+
  parent.children.push({
   id:idCounter++,
   name:nameInput.value,
@@ -144,13 +155,14 @@ function addChild(){
   gio:deathInput.value,
   children:[]
  });
+
  save(); refresh(); draw();
 }
 
 /* ===== UPDATE ===== */
 function updateNode(){
  if(!isAdmin()){
-   alert("Bạn phải đăng nhập Admin");
+   alert("Bạn chưa đăng nhập Admin");
    return;
  }
  if(!selectedId){ alert("Chưa chọn người trên cây"); return; }
@@ -160,6 +172,7 @@ function updateNode(){
  p.name=nameInput.value;
  p.order=orderInput.value;
  p.gio=deathInput.value;
+
  save(); draw();
 }
 
@@ -180,7 +193,7 @@ function draw(){
   .attr("class","node")
   .attr("transform",d=>`translate(${d.y},${d.x})`)
   .on("click",(e,d)=>{
-    selectedId=d.data.id; // LUÔN SET
+    selectedId=d.data.id;   // ✅ LUÔN SET
     if(isAdmin() && d.data.id!==1){
       nameInput.value=d.data.name;
       orderInput.value=d.data.order||"";
@@ -194,7 +207,9 @@ function draw(){
   .text(d=>d.data.id===1?"Thủy Tổ":"Đời "+d.data.doi+" – Con "+d.data.order);
 }
 
-refresh(); draw();
+/* INIT */
+refresh();
+draw();
 </script>
 </body>
 </html>
