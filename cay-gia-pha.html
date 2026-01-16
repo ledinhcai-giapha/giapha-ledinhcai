@@ -150,23 +150,30 @@ function show(id){
 }
 
 /* ===== ADMIN ===== */
-const ADMIN_PASSWORD="ledinh123";
+const ADMIN_PASSWORD = "ledinh123";
+let ADMIN_MODE = false;
+
 function isAdmin(){
- return localStorage.getItem("ledinh_admin")==="1";
+  return ADMIN_MODE === true;
 }
 
 function adminLogin(){
- let p=prompt("Nhập mật khẩu Admin:");
- if(p===ADMIN_PASSWORD){
-   localStorage.setItem("ledinh_admin","1");
-   location.reload();
- } else alert("Sai mật khẩu");
+  let p = prompt("Nhập mật khẩu Admin:");
+  if(p === ADMIN_PASSWORD){
+    ADMIN_MODE = true;
+
+    document.getElementById("manageBox").classList.remove("locked");
+    document.getElementById("lockNote").style.display = "none";
+
+    alert("Đã vào chế độ Admin");
+  } else {
+    alert("Sai mật khẩu");
+  }
 }
 
-if(isAdmin()){
- document.getElementById("manageBox").classList.remove("locked");
- document.getElementById("lockNote").style.display="none";
-}
+// Mặc định KHÓA – chỉ mở khi adminLogin() đúng
+document.getElementById("manageBox").classList.add("locked");
+document.getElementById("lockNote").style.display = "block";
 
 /* ===== DATA ===== */
 let data = JSON.parse(localStorage.getItem("ledinh_data")) || {
