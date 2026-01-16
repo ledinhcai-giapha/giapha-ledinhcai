@@ -186,7 +186,10 @@ function refresh(){
 function addChild(){
  if(!isAdmin()) return alert("Chỉ Admin được thêm");
  let p=all(data).find(n=>n.id==parentSelect.value);
- if(!nameInput.value) return alert("Nhập họ tên");
+ if(!nameInput.value.trim()){
+ alert("Phải nhập HỌ TÊN trước khi thêm");
+ return;
+}
  p.children.push({
   id:Date.now(),
   name:nameInput.value,
@@ -200,71 +203,195 @@ function addChild(){
  clear(); save(); refresh(); draw();
 }
 <script>
+/* ===== NAV ===== */
+function show(id){
+ document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+ document.getElementById(id).classList.add('active');
+}
+
+/* ===== ADMIN ===== */
+const ADMIN_PASSWORD="ledinh123";
+function isAdmin(){
+ return localStorage.getItem("ledinh_admin")==="1";
+}
+
+function adminLogin(){
+ let p=prompt("Nhập mật khẩu Admin:");
+ if(p===ADMIN_PASSWORD){
+   localStorage.setItem("ledinh_admin","1");
+   location.reload();
+ } else alert("Sai mật khẩu");
+}
+
+if(isAdmin()){
+ document.getElementById("manageBox").classList.remove("locked");
+ document.getElementById("lockNote").style.display="none";
+}
+
+/* ===== DATA ===== */
+let data = JSON.parse(localStorage.getItem("ledinh_data")) || {
+ id:1,
+ name:"Thủy Tổ – Lê Đình Cai",
+ doi:1,
+ gio:"Giỗ Tổ: 17 tháng Giêng",
+ children:[]
+};
+
+let selectedId = null;
+
+function save(){
+ localStorage.setItem("ledinh_data", JSON.stringify(data));
+}
+
+function all(n,a=[]){
+ a.push(n);
+ (n.children||[]).forEach(c=>all(c,a));
+ return a;
+}
+
+/* ===== SELECT ===== */
+function refresh(){
+ parentSelect.innerHTML="";
+ all(data).forEach(n=>{
+  parentSelect.add(new Option(n.name+" (Đời "+n.doi+")", n.id));
+ });
+}
+
+/* ===== ADD ===== */
+function addChild(){
+ if(!isAdmin()) return alert("Chỉ Admin được thêm");
+
+ let p = all(data).find(n=>n.id==parentSelect.value);
+
+ if(!nameInput.value.trim()){
+  alert("Phải nhập HỌ TÊN trước khi thêm");
+  return;
+ }
+
+ p.children.push({
+  id: Date.now(),
+  name: nameInput.value.trim(),
+  doi: p.doi + 1,
+  order: orderInput.value,
+  birth: birthInput.value,
+  home: homeInput.value,
+  gio: deathInput.value,
+  children:[]
+ });
+
+ clear();
+ save();
+ refresh();
+ draw();
+}
+
+/* ===== UPDATE ===== */
 function updateNode(){
-  if(!isAdmin()){
-    alert("Chỉ Admin được sửa");
-    return;
-  }
+ if(!isAdmin()){
+  alert("Chỉ Admin được sửa");
+  return;
+ }
 
-  if(!selectedId || selectedId === 1){
-    alert("Không sửa Thủy Tổ");
-    return;
-  }
+ if(!selectedId || selectedId===1){
+  alert("Không sửa Thủy Tổ");
+  return;
+ }
 
-  let p = all(data).find(n => n.id === selectedId);
+ let p = all(data).find(n=>n.id===selectedId);
+ if(!p) return;
 
-  Object.assign(p,{
-    name: nameInput.value,
-    order: orderInput.value,
-    birth: birthInput.value,
-    home: homeInput.value,
-    gio: deathInput.value
-  });
+ Object.assign(p,{
+  name: nameInput.value.trim(),
+  order: orderInput.value,
+  birth: birthInput.value,
+  home: homeInput.value,
+  gio: deathInput.value
+ });
 
-  save();
-  draw();
+ save();
+ draw();
 
-  /* ===== RESET FORM SAU KHI CẬP NHẬT ===== */
-  clear();
-  selectedId = null;
+ /* RESET FORM */
+ clear();
+ selectedId = null;
 }
-</script>
+
+/* ===== FORM ===== */
 function clear(){
- nameInput.value=orderInput.value=birthInput.value=homeInput.value=deathInput.value="";
+ nameInput.value="";
+ orderInput.value="";
+ birthInput.value="";
+ homeInput.value="";
+ deathInput.value="";
 }
+
+/* ===== DRAW (LOẠI NODE RÁC) ===== */
 function draw(){
  d3.select("svg").selectAll("*").remove();
- let g=d3.select("svg").append("g").attr("transform","translate(200,400)");
- let root=d3.hierarchy(data);
+
+ let g = d3.select("svg")
+   .append("g")
+   .attr("transform","translate(200,400)");
+
+ let root = d3.hierarchy(
+  data,
+  d => (d.children||[]).filter(c=>c.name && c.name.trim()!=="")
+ );
+
  d3.tree().nodeSize([150,260])(root);
 
  g.selectAll(".link")
-  .data(root.links()).enter().append("path")
+  .data(root.links()).enter()
+  .append("path")
   .attr("class","link")
   .attr("d",d3.linkHorizontal().x(d=>d.y).y(d=>d.x));
 
- let node=g.selectAll(".node")
-  .data(root.descendants()).enter().append("g")
+ let node = g.selectAll(".node")
+  .data(root.descendants()).enter()
+  .append("g")
   .attr("class","node")
   .attr("transform",d=>`translate(${d.y},${d.x})`)
   .on("click",(e,d)=>{
-    if(!isAdmin()||d.data.id===1) return;
-    selectedId=d.data.id;
-    nameInput.value=d.data.name;
-    orderInput.value=d.data.order||"";
-    birthInput.value=d.data.birth||"";
-    homeInput.value=d.data.home||"";
-    deathInput.value=d.data.gio||"";
+   if(!isAdmin() || d.data.id===1) return;
+   selectedId = d.data.id;
+   nameInput.value = d.data.name||"";
+   orderInput.value = d.data.order||"";
+   birthInput.value = d.data.birth||"";
+   homeInput.value = d.data.home||"";
+   deathInput.value = d.data.gio||"";
   });
 
- node.append("rect").attr("x",-120).attr("y",-60).attr("width",240).attr("height",140);
- node.append("text").attr("y",-38).attr("text-anchor","middle").style("font-weight","bold").text(d=>d.data.name);
- node.append("text").attr("y",-18).attr("text-anchor","middle").text(d=>d.data.id===1?"Thủy Tổ":"Đời "+d.data.doi+" – Con "+d.data.order);
- node.append("text").attr("y",0).attr("text-anchor","middle").style("font-size","12px").text(d=>d.data.birth?"Năm sinh: "+d.data.birth:"");
- node.append("text").attr("y",18).attr("text-anchor","middle").style("font-size","12px").text(d=>d.data.home?"Quê quán: "+d.data.home:"");
- node.append("text").attr("y",36).attr("text-anchor","middle").style("font-size","12px").text(d=>d.data.gio||"");
+ node.append("rect")
+  .attr("x",-120).attr("y",-60)
+  .attr("width",240).attr("height",140);
+
+ node.append("text")
+  .attr("y",-38).attr("text-anchor","middle")
+  .style("font-weight","bold")
+  .text(d=>d.data.name);
+
+ node.append("text")
+  .attr("y",-18).attr("text-anchor","middle")
+  .text(d=>d.data.id===1 ? "Thủy Tổ" : "Đời "+d.data.doi+" – Con "+d.data.order);
+
+ node.append("text")
+  .attr("y",0).attr("text-anchor","middle")
+  .style("font-size","12px")
+  .text(d=>d.data.birth ? "Năm sinh: "+d.data.birth : "");
+
+ node.append("text")
+  .attr("y",18).attr("text-anchor","middle")
+  .style("font-size","12px")
+  .text(d=>d.data.home ? "Quê quán: "+d.data.home : "");
+
+ node.append("text")
+  .attr("y",36).attr("text-anchor","middle")
+  .style("font-size","12px")
+  .text(d=>d.data.gio||"");
 }
-refresh(); draw();
+
+refresh();
+draw();
 </script>
 </body>
 </html>
