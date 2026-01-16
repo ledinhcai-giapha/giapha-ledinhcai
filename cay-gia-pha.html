@@ -145,7 +145,7 @@ if(isAdmin()){
  document.getElementById("lockNote").style.display="none";
 }
 
-/* ===== DATA (LƯU F5) ===== */
+/* ===== DATA ===== */
 let data=JSON.parse(localStorage.getItem("ledinh_data")) || {
  id:1,
  name:"Thủy Tổ – Lê Đình Cai",
@@ -205,19 +205,19 @@ function clear(){
  nameInput.value=orderInput.value=birthInput.value=homeInput.value=deathInput.value="";
 }
 
-/* ===== DRAW ===== */
+/* ===== DRAW (ĐÃ SỬA: HIỂN THỊ QUÊ QUÁN) ===== */
 function draw(){
  d3.select("svg").selectAll("*").remove();
  let g=d3.select("svg").append("g").attr("transform","translate(200,400)");
  let root=d3.hierarchy(data);
- d3.tree().nodeSize([120,260])(root);
+ d3.tree().nodeSize([130,260])(root);
 
  g.selectAll(".link")
   .data(root.links()).enter().append("path")
   .attr("class","link")
   .attr("d",d3.linkHorizontal().x(d=>d.y).y(d=>d.x));
 
- g.selectAll(".node")
+ let node=g.selectAll(".node")
   .data(root.descendants()).enter().append("g")
   .attr("class","node")
   .attr("transform",d=>`translate(${d.y},${d.x})`)
@@ -229,14 +229,29 @@ function draw(){
     birthInput.value=d.data.birth||"";
     homeInput.value=d.data.home||"";
     deathInput.value=d.data.gio||"";
-  })
-  .call(n=>{
-    n.append("rect").attr("x",-110).attr("y",-45).attr("width",220).attr("height",90);
-    n.append("text").attr("y",-20).attr("text-anchor","middle").text(d=>d.data.name);
-    n.append("text").attr("y",5).attr("text-anchor","middle")
-     .text(d=>d.data.id===1?"Thủy Tổ":"Đời "+d.data.doi+" – Con "+d.data.order);
-    n.append("text").attr("y",22).attr("text-anchor","middle").text(d=>d.data.gio||"");
   });
+
+ node.append("rect")
+  .attr("x",-110).attr("y",-50)
+  .attr("width",220).attr("height",110);
+
+ node.append("text")
+  .attr("y",-25).attr("text-anchor","middle")
+  .text(d=>d.data.name);
+
+ node.append("text")
+  .attr("y",-5).attr("text-anchor","middle")
+  .text(d=>d.data.id===1?"Thủy Tổ":"Đời "+d.data.doi+" – Con "+d.data.order);
+
+ node.append("text")
+  .attr("y",15).attr("text-anchor","middle")
+  .text(d=>d.data.gio||"");
+
+ node.append("text")
+  .attr("y",32).attr("text-anchor","middle")
+  .style("font-size","12px")
+  .style("font-style","italic")
+  .text(d=>d.data.home ? "Quê quán: " + d.data.home : "");
 }
 
 refresh(); draw();
