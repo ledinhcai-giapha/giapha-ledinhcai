@@ -34,7 +34,7 @@ svg{width:4000px;height:2500px}
 .node rect{fill:#fff;stroke:#333;rx:6;ry:6}
 .link{fill:none;stroke:#999}
 
-.locked{opacity:.4}
+.locked{opacity:.4;pointer-events:none}
 </style>
 </head>
 
@@ -102,7 +102,7 @@ Ban Gia phả dòng họ Lê Đình
 
 <!-- ================= QUẢN LÝ ================= -->
 <div id="manage" class="section">
-<div id="manageBox">
+<div id="manageBox" class="locked">
 
 <b>Thêm / chỉnh sửa thành viên</b><br><br>
 
@@ -127,8 +127,8 @@ Ban Gia phả dòng họ Lê Đình
 <label>Ngày giỗ:</label>
 <input id="deathInput"><br><br>
 
-<button id="btnAdd" onclick="addChild()">➕ Thêm con</button>
-<button id="btnUpdate" onclick="updateNode()">✏️ Cập nhật</button>
+<button onclick="addChild()">➕ Thêm con</button>
+<button onclick="updateNode()">✏️ Cập nhật</button>
 </div>
 
 <p id="lockNote" style="color:#900;font-weight:bold">
@@ -150,36 +150,33 @@ function show(id){
 }
 
 /* ===== ADMIN ===== */
-const ADMIN_PASSWORD="ledinh123";
-let ADMIN_MODE=false;
+const ADMIN_PASSWORD = "ledinh123";
+let ADMIN_MODE = false;
 
-function isAdmin(){ return ADMIN_MODE===true; }
-
-function lockManage(){
- document.querySelectorAll("#manageBox input, #manageBox select, #manageBox button")
-   .forEach(el=>el.disabled=true);
- document.getElementById("lockNote").style.display="block";
-}
-
-function unlockManage(){
- document.querySelectorAll("#manageBox input, #manageBox select, #manageBox button")
-   .forEach(el=>el.disabled=false);
- document.getElementById("lockNote").style.display="none";
+function isAdmin(){
+  return ADMIN_MODE === true;
 }
 
 function adminLogin(){
- let p=prompt("Nhập mật khẩu Admin:");
- if(p===ADMIN_PASSWORD){
-  ADMIN_MODE=true;
-  unlockManage();
-  alert("Đã vào chế độ Admin");
- }else alert("Sai mật khẩu");
+  let p = prompt("Nhập mật khẩu Admin:");
+  if(p === ADMIN_PASSWORD){
+    ADMIN_MODE = true;
+
+    document.getElementById("manageBox").classList.remove("locked");
+    document.getElementById("lockNote").style.display = "none";
+
+    alert("Đã vào chế độ Admin");
+  } else {
+    alert("Sai mật khẩu");
+  }
 }
 
-lockManage();
+// Mặc định KHÓA – chỉ mở khi adminLogin() đúng
+document.getElementById("manageBox").classList.add("locked");
+document.getElementById("lockNote").style.display = "block";
 
 /* ===== DATA ===== */
-let data={
+let data = JSON.parse(localStorage.getItem("ledinh_data")) || {
  id:1,
  name:"Thủy Tổ – Lê Đình Cai",
  doi:1,
@@ -187,7 +184,11 @@ let data={
  children:[]
 };
 
-let selectedId=null;
+let selectedId = null;
+
+function save(){
+ localStorage.setItem("ledinh_data", JSON.stringify(data));
+}
 
 function all(n,a=[]){
  a.push(n);
@@ -195,91 +196,141 @@ function all(n,a=[]){
  return a;
 }
 
+/* ===== SELECT ===== */
 function refresh(){
  parentSelect.innerHTML="";
  all(data).forEach(n=>{
-  parentSelect.add(new Option(n.name+" (Đời "+n.doi+")",n.id));
+  parentSelect.add(new Option(n.name+" (Đời "+n.doi+")", n.id));
  });
 }
 
 /* ===== ADD ===== */
 function addChild(){
  if(!isAdmin()) return alert("Chỉ Admin được thêm");
- let p=all(data).find(n=>n.id==parentSelect.value);
- if(!nameInput.value.trim()) return alert("Phải nhập HỌ TÊN");
+
+ let p = all(data).find(n=>n.id==parentSelect.value);
+ if(!nameInput.value.trim()){
+  alert("Phải nhập HỌ TÊN trước khi thêm");
+  return;
+ }
 
  p.children.push({
-  id:Date.now(),
-  name:nameInput.value.trim(),
-  doi:p.doi+1,
-  order:orderInput.value,
-  birth:birthInput.value,
-  home:homeInput.value,
-  gio:deathInput.value,
+  id: Date.now(),
+  name: nameInput.value.trim(),
+  doi: p.doi + 1,
+  order: orderInput.value,
+  birth: birthInput.value,
+  home: homeInput.value,
+  gio: deathInput.value,
   children:[]
  });
 
- clearForm();
+ clear();
+ save();
  refresh();
  draw();
 }
 
 /* ===== UPDATE ===== */
 function updateNode(){
- if(!isAdmin()) return alert("Chỉ Admin được sửa");
- if(!selectedId||selectedId===1) return alert("Không sửa Thủy Tổ");
+ if(!isAdmin()){
+  alert("Chỉ Admin được sửa");
+  return;
+ }
+ if(!selectedId || selectedId===1){
+  alert("Không sửa Thủy Tổ");
+  return;
+ }
 
- let p=all(data).find(n=>n.id===selectedId);
+ let p = all(data).find(n=>n.id===selectedId);
+ if(!p) return;
+
  Object.assign(p,{
-  name:nameInput.value.trim(),
-  order:orderInput.value,
-  birth:birthInput.value,
-  home:homeInput.value,
-  gio:deathInput.value
+  name: nameInput.value.trim(),
+  order: orderInput.value,
+  birth: birthInput.value,
+  home: homeInput.value,
+  gio: deathInput.value
  });
 
- clearForm();
- selectedId=null;
+ save();
  draw();
+ clear();
+ selectedId = null;
 }
 
-function clearForm(){
- nameInput.value=orderInput.value=birthInput.value=homeInput.value=deathInput.value="";
+/* ===== FORM ===== */
+function clear(){
+ nameInput.value="";
+ orderInput.value="";
+ birthInput.value="";
+ homeInput.value="";
+ deathInput.value="";
 }
 
 /* ===== DRAW ===== */
 function draw(){
  d3.select("svg").selectAll("*").remove();
- let g=d3.select("svg").append("g").attr("transform","translate(200,400)");
- let root=d3.hierarchy(data,d=>(d.children||[]).filter(c=>c.name));
+
+ let g = d3.select("svg")
+   .append("g")
+   .attr("transform","translate(200,400)");
+
+ let root = d3.hierarchy(
+  data,
+  d => (d.children||[]).filter(c=>c.name && c.name.trim()!=="")
+ );
+
  d3.tree().nodeSize([150,260])(root);
 
  g.selectAll(".link")
-  .data(root.links()).enter().append("path")
+  .data(root.links()).enter()
+  .append("path")
   .attr("class","link")
   .attr("d",d3.linkHorizontal().x(d=>d.y).y(d=>d.x));
 
- g.selectAll(".node")
-  .data(root.descendants()).enter().append("g")
+ let node = g.selectAll(".node")
+  .data(root.descendants()).enter()
+  .append("g")
   .attr("class","node")
   .attr("transform",d=>`translate(${d.y},${d.x})`)
   .on("click",(e,d)=>{
-    if(!isAdmin()||d.data.id===1) return;
-    selectedId=d.data.id;
-    nameInput.value=d.data.name||"";
-    orderInput.value=d.data.order||"";
-    birthInput.value=d.data.birth||"";
-    homeInput.value=d.data.home||"";
-    deathInput.value=d.data.gio||"";
-  })
-  .call(n=>{
-    n.append("rect").attr("x",-120).attr("y",-60).attr("width",240).attr("height",140);
-    n.append("text").attr("y",-38).attr("text-anchor","middle").style("font-weight","bold").text(d=>d.data.name);
-    n.append("text").attr("y",-18).attr("text-anchor","middle").text(d=>d.data.id===1?"Thủy Tổ":"Đời "+d.data.doi+" – Con "+d.data.order);
-    n.append("text").attr("y",0).attr("text-anchor","middle").text(d=>d.data.birth?"Năm sinh: "+d.data.birth:"");
-    n.append("text").attr("y",18).attr("text-anchor","middle").text(d=>d.data.home?"Quê quán: "+d.data.home:"");
-    n.append("text").attr("y",36).attr("text-anchor","middle").text(d=>d.data.gio||"");
+   if(!isAdmin() || d.data.id===1) return;
+   selectedId = d.data.id;
+   nameInput.value = d.data.name||"";
+   orderInput.value = d.data.order||"";
+   birthInput.value = d.data.birth||"";
+   homeInput.value = d.data.home||"";
+   deathInput.value = d.data.gio||"";
   });
+
+ node.append("rect")
+  .attr("x",-120).attr("y",-60)
+  .attr("width",240).attr("height",140);
+
+ node.append("text")
+  .attr("y",-38).attr("text-anchor","middle")
+  .style("font-weight","bold")
+  .text(d=>d.data.name);
+
+ node.append("text")
+  .attr("y",-18).attr("text-anchor","middle")
+  .text(d=>d.data.id===1 ? "Thủy Tổ" : "Đời "+d.data.doi+" – Con "+d.data.order);
+
+ node.append("text")
+  .attr("y",0).attr("text-anchor","middle")
+  .style("font-size","12px")
+  .text(d=>d.data.birth ? "Năm sinh: "+d.data.birth : "");
+
+ node.append("text")
+  .attr("y",18).attr("text-anchor","middle")
+  .style("font-size","12px")
+  .text(d=>d.data.home ? "Quê quán: "+d.data.home : "");
+
+ node.append("text")
+  .attr("y",36).attr("text-anchor","middle")
+  .style("font-size","12px")
+  .text(d=>d.data.gio||"");
 }
 
 refresh();
