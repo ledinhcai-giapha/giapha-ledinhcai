@@ -15,13 +15,25 @@ body{
   background-size:cover;
 }
 .main{
-  background:rgba(255,255,255,0.95);
+  background:rgba(255,255,255,0.92);
   max-width:1200px;
   margin:auto;
-  padding:30px 40px;
+  padding:40px 50px;
+  border-radius:14px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.15);
 }
 .menu{text-align:center;margin:20px 0}
-.menu button{padding:6px 16px;font-weight:bold}
+.menu button{
+  padding:8px 18px;
+  font-weight:bold;
+  border-radius:8px;
+  border:1px solid #aaa;
+  background:#f4f4f4;
+  cursor:pointer;
+}
+.menu button:hover{
+  background:#e6e6e6;
+}
 .section{display:none}
 .section.active{display:block}
 
@@ -31,7 +43,13 @@ input,select{width:280px;margin-bottom:6px}
 .wrapper{height:70vh;overflow:auto;border:1px solid #ccc}
 svg{width:4000px;height:2500px}
 
-.node rect{fill:#fff;stroke:#333;rx:6;ry:6}
+.node rect{
+  fill:#fffdf8;
+  stroke:#555;
+  rx:10;
+  ry:10;
+  box-shadow:0 4px 10px rgba(0,0,0,0.15);
+}
 .link{fill:none;stroke:#999}
 
 .locked{opacity:.4}
