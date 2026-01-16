@@ -53,10 +53,51 @@ svg{width:4000px;height:2500px}
 <div id="home" class="section active">
 <h2 style="text-align:center">LỜI GIỚI THIỆU</h2>
 
-<p>Gia phả là sợi dây nối liền các thế hệ, là nơi lưu giữ cội nguồn, công đức tổ tiên và truyền thống của dòng họ qua bao đời.</p>
-<p>Dòng họ Lê chúng ta lấy <b>Thủy tổ là Cụ Lê Đình Cai</b>, con trai của <b>Hoàng thân Lê Duy Mật</b>, làm gốc.</p>
-<p>Gia phả điện tử này được xây dựng trên tinh thần <b>tôn trọng lịch sử – giữ gìn truyền thống – truyền lại cho mai sau</b>.</p>
-<p style="text-align:right;font-weight:bold">Ban Gia phả dòng họ Lê Đình</p>
+<p>
+Gia phả là sợi dây nối liền các thế hệ, là nơi lưu giữ cội nguồn,
+công đức tổ tiên và truyền thống của dòng họ qua bao đời.
+</p>
+
+<p>
+Dòng họ Lê chúng ta lấy <b>Thủy tổ là Cụ Lê Đình Cai</b>,
+con trai của <b>Hoàng thân Lê Duy Mật</b>, làm gốc.
+Từ Thủy tổ, các đời con cháu tiếp nối sinh sôi, lập nghiệp,
+đóng góp cho gia đình, quê hương và đất nước.
+</p>
+
+<p>
+Trải qua thời gian, nhiều tư liệu gia phả bằng giấy đã mai một,
+phân tán hoặc khó bảo quản. Việc xây dựng Gia phả điện tử nhằm:
+</p>
+
+<ul style="margin-left:30px">
+  <li>Gìn giữ đầy đủ, chính xác thông tin các thế hệ trong dòng họ</li>
+  <li>Giúp con cháu dễ dàng tra cứu cội nguồn, vai vế, thứ bậc</li>
+  <li>Thuận tiện trong việc tổ chức giỗ tổ, giỗ chi, tưởng nhớ tổ tiên</li>
+  <li>Kết nối con cháu trong và ngoài nước, dù ở bất cứ nơi đâu</li>
+</ul>
+
+<p>
+Gia phả điện tử này được xây dựng trên tinh thần
+<b>tôn trọng lịch sử – giữ gìn truyền thống – truyền lại cho mai sau</b>.
+Mọi thông tin đều được Ban gia phả rà soát, bổ sung và cập nhật cẩn trọng.
+</p>
+
+<p>
+Nguyện mong con cháu đời sau, khi xem gia phả,
+luôn nhớ đến công lao tổ tiên, giữ gìn nề nếp gia phong,
+đoàn kết yêu thương, cùng nhau làm rạng danh dòng họ.
+</p>
+
+<p>
+Gia phả này là <b>tài sản chung của toàn thể dòng họ</b>,
+được lưu giữ và sử dụng cho mục đích tưởng nhớ tổ tiên
+và giáo dục truyền thống cho các thế hệ mai sau.
+</p>
+
+<p style="text-align:right;font-weight:bold;margin-top:30px">
+Ban Gia phả dòng họ Lê Đình
+</p>
 </div>
 
 <!-- ================= QUẢN LÝ ================= -->
@@ -125,7 +166,7 @@ if(isAdmin()){
  document.getElementById("lockNote").style.display="none";
 }
 
-/* ===== DATA ===== */
+/* ===== DATA + DRAW (GIỮ NGUYÊN) ===== */
 let data=JSON.parse(localStorage.getItem("ledinh_data")) || {
  id:1,
  name:"Thủy Tổ – Lê Đình Cai",
@@ -135,19 +176,13 @@ let data=JSON.parse(localStorage.getItem("ledinh_data")) || {
 };
 let selectedId=null;
 function save(){ localStorage.setItem("ledinh_data",JSON.stringify(data)); }
-
-/* ===== UTIL ===== */
 function all(n,a=[]){ a.push(n); (n.children||[]).forEach(c=>all(c,a)); return a; }
-
-/* ===== SELECT ===== */
 function refresh(){
  parentSelect.innerHTML="";
  all(data).forEach(n=>{
   parentSelect.add(new Option(n.name+" (Đời "+n.doi+")",n.id));
  });
 }
-
-/* ===== ADD ===== */
 function addChild(){
  if(!isAdmin()) return alert("Chỉ Admin được thêm");
  let p=all(data).find(n=>n.id==parentSelect.value);
@@ -164,8 +199,6 @@ function addChild(){
  });
  clear(); save(); refresh(); draw();
 }
-
-/* ===== UPDATE ===== */
 function updateNode(){
  if(!isAdmin()) return alert("Chỉ Admin được sửa");
  if(!selectedId||selectedId===1) return alert("Không sửa Thủy Tổ");
@@ -179,13 +212,9 @@ function updateNode(){
  });
  save(); draw();
 }
-
-/* ===== FORM ===== */
 function clear(){
  nameInput.value=orderInput.value=birthInput.value=homeInput.value=deathInput.value="";
 }
-
-/* ===== DRAW – HIỂN THỊ NĂM SINH + QUÊ QUÁN ===== */
 function draw(){
  d3.select("svg").selectAll("*").remove();
  let g=d3.select("svg").append("g").attr("transform","translate(200,400)");
@@ -211,35 +240,13 @@ function draw(){
     deathInput.value=d.data.gio||"";
   });
 
- node.append("rect")
-  .attr("x",-120).attr("y",-60)
-  .attr("width",240).attr("height",140);
-
- node.append("text")
-  .attr("y",-38).attr("text-anchor","middle")
-  .style("font-weight","bold")
-  .text(d=>d.data.name);
-
- node.append("text")
-  .attr("y",-18).attr("text-anchor","middle")
-  .text(d=>d.data.id===1?"Thủy Tổ":"Đời "+d.data.doi+" – Con "+d.data.order);
-
- node.append("text")
-  .attr("y",0).attr("text-anchor","middle")
-  .style("font-size","12px")
-  .text(d=>d.data.birth ? "Năm sinh: "+d.data.birth : "");
-
- node.append("text")
-  .attr("y",18).attr("text-anchor","middle")
-  .style("font-size","12px")
-  .text(d=>d.data.home ? "Quê quán: "+d.data.home : "");
-
- node.append("text")
-  .attr("y",36).attr("text-anchor","middle")
-  .style("font-size","12px")
-  .text(d=>d.data.gio||"");
+ node.append("rect").attr("x",-120).attr("y",-60).attr("width",240).attr("height",140);
+ node.append("text").attr("y",-38).attr("text-anchor","middle").style("font-weight","bold").text(d=>d.data.name);
+ node.append("text").attr("y",-18).attr("text-anchor","middle").text(d=>d.data.id===1?"Thủy Tổ":"Đời "+d.data.doi+" – Con "+d.data.order);
+ node.append("text").attr("y",0).attr("text-anchor","middle").style("font-size","12px").text(d=>d.data.birth?"Năm sinh: "+d.data.birth:"");
+ node.append("text").attr("y",18).attr("text-anchor","middle").style("font-size","12px").text(d=>d.data.home?"Quê quán: "+d.data.home:"");
+ node.append("text").attr("y",36).attr("text-anchor","middle").style("font-size","12px").text(d=>d.data.gio||"");
 }
-
 refresh(); draw();
 </script>
 </body>
