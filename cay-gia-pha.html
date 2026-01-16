@@ -199,19 +199,36 @@ function addChild(){
  });
  clear(); save(); refresh(); draw();
 }
+<script>
 function updateNode(){
- if(!isAdmin()) return alert("Chỉ Admin được sửa");
- if(!selectedId||selectedId===1) return alert("Không sửa Thủy Tổ");
- let p=all(data).find(n=>n.id===selectedId);
- Object.assign(p,{
-  name:nameInput.value,
-  order:orderInput.value,
-  birth:birthInput.value,
-  home:homeInput.value,
-  gio:deathInput.value
- });
- save(); draw();
+  if(!isAdmin()){
+    alert("Chỉ Admin được sửa");
+    return;
+  }
+
+  if(!selectedId || selectedId === 1){
+    alert("Không sửa Thủy Tổ");
+    return;
+  }
+
+  let p = all(data).find(n => n.id === selectedId);
+
+  Object.assign(p,{
+    name: nameInput.value,
+    order: orderInput.value,
+    birth: birthInput.value,
+    home: homeInput.value,
+    gio: deathInput.value
+  });
+
+  save();
+  draw();
+
+  /* ===== RESET FORM SAU KHI CẬP NHẬT ===== */
+  clear();
+  selectedId = null;
 }
+</script>
 function clear(){
  nameInput.value=orderInput.value=birthInput.value=homeInput.value=deathInput.value="";
 }
