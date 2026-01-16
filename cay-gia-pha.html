@@ -151,66 +151,6 @@ function show(id){
 
 /* ===== ADMIN ===== */
 const ADMIN_PASSWORD="ledinh123";
-function isAdmin(){ return localStorage.getItem("ledinh_admin")==="1"; }
-
-function adminLogin(){
- let p=prompt("Nhập mật khẩu Admin:");
- if(p===ADMIN_PASSWORD){
-   localStorage.setItem("ledinh_admin","1");
-   location.reload();
- } else alert("Sai mật khẩu");
-}
-
-if(isAdmin()){
- document.getElementById("manageBox").classList.remove("locked");
- document.getElementById("lockNote").style.display="none";
-}
-
-/* ===== DATA + DRAW (GIỮ NGUYÊN) ===== */
-let data=JSON.parse(localStorage.getItem("ledinh_data")) || {
- id:1,
- name:"Thủy Tổ – Lê Đình Cai",
- doi:1,
- gio:"Giỗ Tổ: 17 tháng Giêng",
- children:[]
-};
-let selectedId=null;
-function save(){ localStorage.setItem("ledinh_data",JSON.stringify(data)); }
-function all(n,a=[]){ a.push(n); (n.children||[]).forEach(c=>all(c,a)); return a; }
-function refresh(){
- parentSelect.innerHTML="";
- all(data).forEach(n=>{
-  parentSelect.add(new Option(n.name+" (Đời "+n.doi+")",n.id));
- });
-}
-function addChild(){
- if(!isAdmin()) return alert("Chỉ Admin được thêm");
- let p=all(data).find(n=>n.id==parentSelect.value);
- if(!nameInput.value.trim()){
- alert("Phải nhập HỌ TÊN trước khi thêm");
- return;
-}
- p.children.push({
-  id:Date.now(),
-  name:nameInput.value,
-  doi:p.doi+1,
-  order:orderInput.value,
-  birth:birthInput.value,
-  home:homeInput.value,
-  gio:deathInput.value,
-  children:[]
- });
- clear(); save(); refresh(); draw();
-}
-<script>
-/* ===== NAV ===== */
-function show(id){
- document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
- document.getElementById(id).classList.add('active');
-}
-
-/* ===== ADMIN ===== */
-const ADMIN_PASSWORD="ledinh123";
 function isAdmin(){
  return localStorage.getItem("ledinh_admin")==="1";
 }
@@ -262,7 +202,6 @@ function addChild(){
  if(!isAdmin()) return alert("Chỉ Admin được thêm");
 
  let p = all(data).find(n=>n.id==parentSelect.value);
-
  if(!nameInput.value.trim()){
   alert("Phải nhập HỌ TÊN trước khi thêm");
   return;
@@ -291,7 +230,6 @@ function updateNode(){
   alert("Chỉ Admin được sửa");
   return;
  }
-
  if(!selectedId || selectedId===1){
   alert("Không sửa Thủy Tổ");
   return;
@@ -310,8 +248,6 @@ function updateNode(){
 
  save();
  draw();
-
- /* RESET FORM */
  clear();
  selectedId = null;
 }
@@ -325,7 +261,7 @@ function clear(){
  deathInput.value="";
 }
 
-/* ===== DRAW (LOẠI NODE RÁC) ===== */
+/* ===== DRAW ===== */
 function draw(){
  d3.select("svg").selectAll("*").remove();
 
