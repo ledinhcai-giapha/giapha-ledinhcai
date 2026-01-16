@@ -31,9 +31,8 @@ body{
   background:#f4f4f4;
   cursor:pointer;
 }
-.menu button:hover{
-  background:#e6e6e6;
-}
+.menu button:hover{background:#e6e6e6}
+
 .section{display:none}
 .section.active{display:block}
 
@@ -43,16 +42,12 @@ input,select{width:280px;margin-bottom:6px}
 .wrapper{height:70vh;overflow:auto;border:1px solid #ccc}
 svg{width:4000px;height:2500px}
 
-.node rect{
-  fill:#fffdf8;
-  stroke:#555;
-  rx:10;
-  ry:10;
-  box-shadow:0 4px 10px rgba(0,0,0,0.15);
-}
+.node rect{fill:#fffdf8;stroke:#555;rx:10;ry:10}
 .link{fill:none;stroke:#999}
 
 .locked{opacity:.4}
+.admin-tools{text-align:center;margin-top:20px}
+.admin-tools button{margin:6px}
 </style>
 </head>
 
@@ -121,11 +116,7 @@ Ban Gia phả dòng họ Lê Đình
 <!-- ================= QUẢN LÝ ================= -->
 <div id="manage" class="section">
 <div id="manageBox">
-
 <b>Thêm / chỉnh sửa thành viên</b><br><br>
-
-<label>Thủy Tổ:</label>
-<input value="Lê Đình Cai" disabled><br>
 
 <label>Cha:</label>
 <select id="parentSelect"></select><br>
@@ -134,7 +125,7 @@ Ban Gia phả dòng họ Lê Đình
 <input id="nameInput"><br>
 
 <label>Con thứ mấy:</label>
-<input id="orderInput" type="number"><br>
+<input id="orderInput"><br>
 
 <label>Năm sinh:</label>
 <input id="birthInput"><br>
@@ -145,8 +136,16 @@ Ban Gia phả dòng họ Lê Đình
 <label>Ngày giỗ:</label>
 <input id="deathInput"><br><br>
 
-<button id="btnAdd" onclick="addChild()">➕ Thêm con</button>
-<button id="btnUpdate" onclick="updateNode()">✏️ Cập nhật</button>
+<button onclick="addChild()">➕ Thêm</button>
+<button onclick="updateNode()">✏️ Cập nhật</button>
+</div>
+
+<div class="admin-tools" id="adminTools" style="display:none">
+<hr>
+<button onclick="adminLogout()">🚪 Đăng xuất Admin</button>
+<button onclick="backupData()">💾 Sao lưu</button>
+<button onclick="restoreData()">♻️ Phục hồi</button>
+<button onclick="printTree()">🖨️ In / Xuất PDF</button>
 </div>
 
 <p id="lockNote" style="color:#900;font-weight:bold">
@@ -161,147 +160,118 @@ Ban Gia phả dòng họ Lê Đình
 </div>
 
 <script>
-/* ===== NAV ===== */
 function show(id){
  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
  document.getElementById(id).classList.add('active');
 }
 
-/* ===== ADMIN ===== */
+/* ADMIN */
 const ADMIN_PASSWORD="ledinh123";
-let ADMIN_MODE=false;
+let ADMIN=false;
 
-function isAdmin(){ return ADMIN_MODE===true; }
-
-function lockManage(){
- document.querySelectorAll("#manageBox input, #manageBox select, #manageBox button")
-   .forEach(el=>el.disabled=true);
+function lock(){
+ document.querySelectorAll("#manageBox input,#manageBox select,#manageBox button")
+  .forEach(e=>e.disabled=true);
  document.getElementById("lockNote").style.display="block";
+ document.getElementById("adminTools").style.display="none";
 }
 
-function unlockManage(){
- document.querySelectorAll("#manageBox input, #manageBox select, #manageBox button")
-   .forEach(el=>el.disabled=false);
+function unlock(){
+ document.querySelectorAll("#manageBox input,#manageBox select,#manageBox button")
+  .forEach(e=>e.disabled=false);
  document.getElementById("lockNote").style.display="none";
+ document.getElementById("adminTools").style.display="block";
 }
 
 function adminLogin(){
  let p=prompt("Nhập mật khẩu Admin:");
  if(p===ADMIN_PASSWORD){
-  ADMIN_MODE=true;
-  unlockManage();
+  ADMIN=true;
+  unlock();
   alert("Đã vào chế độ Admin");
- }else alert("Sai mật khẩu");
+ } else alert("Sai mật khẩu");
 }
 
-lockManage();
+function adminLogout(){
+ ADMIN=false;
+ lock();
+ alert("Đã đăng xuất Admin");
+}
 
-/* ===== DATA ===== */
-let data={
- id:1,
- name:"Thủy Tổ – Lê Đình Cai",
- doi:1,
- gio:"Giỗ Tổ: 17 tháng Giêng",
- children:[]
-};
+lock();
 
+/* DATA */
+let data={id:1,name:"Thủy Tổ – Lê Đình Cai",doi:1,children:[]};
 let selectedId=null;
 
-function all(n,a=[]){
- a.push(n);
- (n.children||[]).forEach(c=>all(c,a));
- return a;
-}
+function all(n,a=[]){a.push(n);(n.children||[]).forEach(c=>all(c,a));return a;}
 
 function refresh(){
  parentSelect.innerHTML="";
- all(data).forEach(n=>{
-  parentSelect.add(new Option(n.name+" (Đời "+n.doi+")",n.id));
- });
+ all(data).forEach(n=>parentSelect.add(new Option(n.name,n.id)));
 }
 
-/* ===== ADD ===== */
+/* ADD */
 function addChild(){
- if(!isAdmin()) return alert("Chỉ Admin được thêm");
+ if(!ADMIN) return alert("Chỉ Admin được thêm");
  let p=all(data).find(n=>n.id==parentSelect.value);
  if(!nameInput.value.trim()) return alert("Phải nhập HỌ TÊN");
-
- p.children.push({
-  id:Date.now(),
-  name:nameInput.value.trim(),
-  doi:p.doi+1,
-  order:orderInput.value,
-  birth:birthInput.value,
-  home:homeInput.value,
-  gio:deathInput.value,
-  children:[]
- });
-
- clearForm();
- refresh();
- draw();
+ p.children.push({id:Date.now(),name:nameInput.value.trim(),doi:p.doi+1,children:[]});
+ draw();refresh();
 }
 
-/* ===== UPDATE ===== */
+/* UPDATE */
 function updateNode(){
- if(!isAdmin()) return alert("Chỉ Admin được sửa");
- if(!selectedId||selectedId===1) return alert("Không sửa Thủy Tổ");
-
+ if(!ADMIN||!selectedId||selectedId===1) return;
  let p=all(data).find(n=>n.id===selectedId);
- Object.assign(p,{
-  name:nameInput.value.trim(),
-  order:orderInput.value,
-  birth:birthInput.value,
-  home:homeInput.value,
-  gio:deathInput.value
- });
-
- clearForm();
- selectedId=null;
+ p.name=nameInput.value.trim();
  draw();
 }
 
-function clearForm(){
- nameInput.value=orderInput.value=birthInput.value=homeInput.value=deathInput.value="";
+/* BACKUP */
+function backupData(){
+ const a=document.createElement("a");
+ a.href=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:"application/json"}));
+ a.download="gia-pha-ledinh.json";
+ a.click();
 }
 
-/* ===== DRAW ===== */
+/* RESTORE */
+function restoreData(){
+ const i=document.createElement("input");
+ i.type="file";
+ i.onchange=e=>{
+  const r=new FileReader();
+  r.onload=()=>{data=JSON.parse(r.result);draw();refresh();}
+  r.readAsText(e.target.files[0]);
+ }
+ i.click();
+}
+
+/* PRINT */
+function printTree(){window.print();}
+
+/* DRAW */
 function draw(){
  d3.select("svg").selectAll("*").remove();
  let g=d3.select("svg").append("g").attr("transform","translate(200,400)");
- let root=d3.hierarchy(data,d=>(d.children||[]).filter(c=>c.name));
+ let root=d3.hierarchy(data,d=>d.children);
  d3.tree().nodeSize([150,260])(root);
 
- g.selectAll(".link")
-  .data(root.links()).enter().append("path")
-  .attr("class","link")
-  .attr("d",d3.linkHorizontal().x(d=>d.y).y(d=>d.x));
+ g.selectAll(".link").data(root.links()).enter().append("path")
+ .attr("class","link")
+ .attr("d",d3.linkHorizontal().x(d=>d.y).y(d=>d.x));
 
- g.selectAll(".node")
-  .data(root.descendants()).enter().append("g")
-  .attr("class","node")
-  .attr("transform",d=>`translate(${d.y},${d.x})`)
-  .on("click",(e,d)=>{
-    if(!isAdmin()||d.data.id===1) return;
-    selectedId=d.data.id;
-    nameInput.value=d.data.name||"";
-    orderInput.value=d.data.order||"";
-    birthInput.value=d.data.birth||"";
-    homeInput.value=d.data.home||"";
-    deathInput.value=d.data.gio||"";
-  })
-  .call(n=>{
-    n.append("rect").attr("x",-120).attr("y",-60).attr("width",240).attr("height",140);
-    n.append("text").attr("y",-38).attr("text-anchor","middle").style("font-weight","bold").text(d=>d.data.name);
-    n.append("text").attr("y",-18).attr("text-anchor","middle").text(d=>d.data.id===1?"Thủy Tổ":"Đời "+d.data.doi+" – Con "+d.data.order);
-    n.append("text").attr("y",0).attr("text-anchor","middle").text(d=>d.data.birth?"Năm sinh: "+d.data.birth:"");
-    n.append("text").attr("y",18).attr("text-anchor","middle").text(d=>d.data.home?"Quê quán: "+d.data.home:"");
-    n.append("text").attr("y",36).attr("text-anchor","middle").text(d=>d.data.gio||"");
-  });
+ g.selectAll(".node").data(root.descendants()).enter().append("g")
+ .attr("class","node")
+ .attr("transform",d=>`translate(${d.y},${d.x})`)
+ .on("click",(e,d)=>{if(ADMIN){selectedId=d.data.id;nameInput.value=d.data.name}})
+ .call(n=>{
+  n.append("rect").attr("x",-120).attr("y",-40).attr("width",240).attr("height",80);
+  n.append("text").attr("text-anchor","middle").attr("y",0).text(d=>d.data.name);
+ });
 }
-
-refresh();
-draw();
+refresh();draw();
 </script>
 </body>
 </html>
