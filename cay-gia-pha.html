@@ -15,42 +15,26 @@ body{
   background-size:cover;
 }
 .main{
-  background:rgba(255,255,255,0.92);
+  background:rgba(255,255,255,0.95);
   max-width:1200px;
   margin:auto;
-  padding:40px 50px;
-  border-radius:14px;
-  box-shadow:0 10px 30px rgba(0,0,0,0.15);
+  padding:30px 40px;
 }
 .menu{text-align:center;margin:20px 0}
-.menu button{
-  padding:8px 18px;
-  font-weight:bold;
-  border-radius:8px;
-  border:1px solid #aaa;
-  background:#f4f4f4;
-  cursor:pointer;
-}
-.menu button:hover{background:#e6e6e6}
-
+.menu button{padding:6px 16px;font-weight:bold}
 .section{display:none}
 .section.active{display:block}
 
-label{display:inline-block;width:160px}
-input,select{width:260px;margin-bottom:6px}
+label{display:inline-block;width:180px}
+input,select{width:280px;margin-bottom:6px}
 
 .wrapper{height:70vh;overflow:auto;border:1px solid #ccc}
 svg{width:4000px;height:2500px}
 
-.node rect{
-  fill:#fffdf8;
-  stroke:#555;
-  rx:10;
-  ry:10;
-}
+.node rect{fill:#fff;stroke:#333;rx:6;ry:6}
 .link{fill:none;stroke:#999}
 
-.locked{opacity:.4}
+.locked{opacity:.4;pointer-events:none}
 </style>
 </head>
 
@@ -87,15 +71,28 @@ phân tán hoặc khó bảo quản. Việc xây dựng Gia phả điện tử n
 </p>
 
 <ul style="margin-left:30px">
-  <li>Gìn giữ đầy đủ, chính xác thông tin các thế hệ</li>
-  <li>Giúp con cháu tra cứu cội nguồn, vai vế</li>
-  <li>Thuận tiện trong giỗ tổ, giỗ chi</li>
-  <li>Kết nối con cháu trong và ngoài nước</li>
+  <li>Gìn giữ đầy đủ, chính xác thông tin các thế hệ trong dòng họ</li>
+  <li>Giúp con cháu dễ dàng tra cứu cội nguồn, vai vế, thứ bậc</li>
+  <li>Thuận tiện trong việc tổ chức giỗ tổ, giỗ chi, tưởng nhớ tổ tiên</li>
+  <li>Kết nối con cháu trong và ngoài nước, dù ở bất cứ nơi đâu</li>
 </ul>
 
 <p>
-Gia phả điện tử được xây dựng trên tinh thần
+Gia phả điện tử này được xây dựng trên tinh thần
 <b>tôn trọng lịch sử – giữ gìn truyền thống – truyền lại cho mai sau</b>.
+Mọi thông tin đều được Ban gia phả rà soát, bổ sung và cập nhật cẩn trọng.
+</p>
+
+<p>
+Nguyện mong con cháu đời sau, khi xem gia phả,
+luôn nhớ đến công lao tổ tiên, giữ gìn nề nếp gia phong,
+đoàn kết yêu thương, cùng nhau làm rạng danh dòng họ.
+</p>
+
+<p>
+Gia phả này là <b>tài sản chung của toàn thể dòng họ</b>,
+được lưu giữ và sử dụng cho mục đích tưởng nhớ tổ tiên
+và giáo dục truyền thống cho các thế hệ mai sau.
 </p>
 
 <p style="text-align:right;font-weight:bold;margin-top:30px">
@@ -105,7 +102,7 @@ Ban Gia phả dòng họ Lê Đình
 
 <!-- ================= QUẢN LÝ ================= -->
 <div id="manage" class="section">
-<div id="manageBox">
+<div id="manageBox" class="locked">
 
 <b>Thêm / chỉnh sửa thành viên</b><br><br>
 
@@ -130,7 +127,7 @@ Ban Gia phả dòng họ Lê Đình
 <label>Ngày giỗ:</label>
 <input id="deathInput"><br><br>
 
-<button onclick="addChild()">➕ Thêm</button>
+<button onclick="addChild()">➕ Thêm con</button>
 <button onclick="updateNode()">✏️ Cập nhật</button>
 </div>
 
@@ -153,128 +150,191 @@ function show(id){
 }
 
 /* ===== ADMIN ===== */
-const ADMIN_PASSWORD="ledinh123";
-let ADMIN_MODE=false;
+const ADMIN_PASSWORD = "ledinh123";
+let ADMIN_MODE = false;
 
-function isAdmin(){return ADMIN_MODE;}
+function isAdmin(){
+  return ADMIN_MODE === true;
+}
 
-function lockManage(){
- document.querySelectorAll("#manageBox input, #manageBox select, #manageBox button")
-  .forEach(e=>e.disabled=true);
- document.getElementById("lockNote").style.display="block";
-}
-function unlockManage(){
- document.querySelectorAll("#manageBox input, #manageBox select, #manageBox button")
-  .forEach(e=>e.disabled=false);
- document.getElementById("lockNote").style.display="none";
-}
 function adminLogin(){
- let p=prompt("Nhập mật khẩu Admin:");
- if(p===ADMIN_PASSWORD){
-  ADMIN_MODE=true;
-  unlockManage();
-  alert("Đã vào chế độ Admin");
- }else alert("Sai mật khẩu");
+  let p = prompt("Nhập mật khẩu Admin:");
+  if(p === ADMIN_PASSWORD){
+    ADMIN_MODE = true;
+
+    document.getElementById("manageBox").classList.remove("locked");
+    document.getElementById("lockNote").style.display = "none";
+
+    alert("Đã vào chế độ Admin");
+  } else {
+    alert("Sai mật khẩu");
+  }
 }
-lockManage();
+
+// Mặc định KHÓA – chỉ mở khi adminLogin() đúng
+document.getElementById("manageBox").classList.add("locked");
+document.getElementById("lockNote").style.display = "block";
 
 /* ===== DATA ===== */
-let data={
+let data = JSON.parse(localStorage.getItem("ledinh_data")) || {
  id:1,
  name:"Thủy Tổ – Lê Đình Cai",
  doi:1,
- gio:"17 tháng Giêng",
+ gio:"Giỗ Tổ: 17 tháng Giêng",
  children:[]
 };
-let selectedId=null;
+
+let selectedId = null;
+
+function save(){
+ localStorage.setItem("ledinh_data", JSON.stringify(data));
+}
 
 function all(n,a=[]){
- a.push(n);(n.children||[]).forEach(c=>all(c,a));return a;
+ a.push(n);
+ (n.children||[]).forEach(c=>all(c,a));
+ return a;
 }
+
+/* ===== SELECT ===== */
 function refresh(){
  parentSelect.innerHTML="";
  all(data).forEach(n=>{
-  parentSelect.add(new Option(n.name+" (Đời "+n.doi+")",n.id));
+  parentSelect.add(new Option(n.name+" (Đời "+n.doi+")", n.id));
  });
 }
 
 /* ===== ADD ===== */
 function addChild(){
  if(!isAdmin()) return alert("Chỉ Admin được thêm");
- selectedId=null;
 
- let p=all(data).find(n=>n.id==parentSelect.value);
- if(!nameInput.value.trim()) return alert("Phải nhập HỌ TÊN");
+ let p = all(data).find(n=>n.id==parentSelect.value);
+ if(!nameInput.value.trim()){
+  alert("Phải nhập HỌ TÊN trước khi thêm");
+  return;
+ }
 
  p.children.push({
-  id:Date.now(),
-  name:nameInput.value.trim(),
-  doi:p.doi+1,
-  order:orderInput.value,
-  birth:birthInput.value,
-  home:homeInput.value,
-  gio:deathInput.value,
+  id: Date.now(),
+  name: nameInput.value.trim(),
+  doi: p.doi + 1,
+  order: orderInput.value,
+  birth: birthInput.value,
+  home: homeInput.value,
+  gio: deathInput.value,
   children:[]
  });
- clearForm();refresh();draw();
+
+ clear();
+ save();
+ refresh();
+ draw();
 }
 
 /* ===== UPDATE ===== */
 function updateNode(){
- if(!isAdmin()) return alert("Chỉ Admin được sửa");
- if(!selectedId||selectedId===1) return alert("Không sửa Thủy Tổ");
+ if(!isAdmin()){
+  alert("Chỉ Admin được sửa");
+  return;
+ }
+ if(!selectedId || selectedId===1){
+  alert("Không sửa Thủy Tổ");
+  return;
+ }
 
- let p=all(data).find(n=>n.id===selectedId);
+ let p = all(data).find(n=>n.id===selectedId);
+ if(!p) return;
+
  Object.assign(p,{
-  name:nameInput.value.trim(),
-  order:orderInput.value,
-  birth:birthInput.value,
-  home:homeInput.value,
-  gio:deathInput.value
+  name: nameInput.value.trim(),
+  order: orderInput.value,
+  birth: birthInput.value,
+  home: homeInput.value,
+  gio: deathInput.value
  });
- clearForm();selectedId=null;draw();
+
+ save();
+ draw();
+ clear();
+ selectedId = null;
 }
 
-function clearForm(){
- nameInput.value=orderInput.value=birthInput.value=homeInput.value=deathInput.value="";
+/* ===== FORM ===== */
+function clear(){
+ nameInput.value="";
+ orderInput.value="";
+ birthInput.value="";
+ homeInput.value="";
+ deathInput.value="";
 }
 
 /* ===== DRAW ===== */
 function draw(){
  d3.select("svg").selectAll("*").remove();
- let g=d3.select("svg").append("g").attr("transform","translate(200,400)");
- let root=d3.hierarchy(data,d=>(d.children||[]).filter(c=>c.name));
+
+ let g = d3.select("svg")
+   .append("g")
+   .attr("transform","translate(200,400)");
+
+ let root = d3.hierarchy(
+  data,
+  d => (d.children||[]).filter(c=>c.name && c.name.trim()!=="")
+ );
+
  d3.tree().nodeSize([150,260])(root);
 
  g.selectAll(".link")
-  .data(root.links()).enter().append("path")
+  .data(root.links()).enter()
+  .append("path")
   .attr("class","link")
   .attr("d",d3.linkHorizontal().x(d=>d.y).y(d=>d.x));
 
- let node=g.selectAll(".node")
-  .data(root.descendants()).enter().append("g")
+ let node = g.selectAll(".node")
+  .data(root.descendants()).enter()
+  .append("g")
   .attr("class","node")
   .attr("transform",d=>`translate(${d.y},${d.x})`)
   .on("click",(e,d)=>{
-    if(!isAdmin()||d.data.id===1) return;
-    selectedId=d.data.id;
-    nameInput.value=d.data.name||"";
-    orderInput.value=d.data.order||"";
-    birthInput.value=d.data.birth||"";
-    homeInput.value=d.data.home||"";
-    deathInput.value=d.data.gio||"";
+   if(!isAdmin() || d.data.id===1) return;
+   selectedId = d.data.id;
+   nameInput.value = d.data.name||"";
+   orderInput.value = d.data.order||"";
+   birthInput.value = d.data.birth||"";
+   homeInput.value = d.data.home||"";
+   deathInput.value = d.data.gio||"";
   });
 
- node.append("rect").attr("x",-120).attr("y",-60).attr("width",240).attr("height",140);
- node.append("text").attr("y",-38).attr("text-anchor","middle").style("font-weight","bold").text(d=>d.data.name);
- node.append("text").attr("y",-18).attr("text-anchor","middle")
-  .text(d=>d.data.id===1?"Thủy Tổ":"Đời "+d.data.doi+" – Con "+(d.data.order||""));
- node.append("text").attr("y",0).attr("text-anchor","middle").text(d=>d.data.birth?"Năm sinh: "+d.data.birth:"");
- node.append("text").attr("y",18).attr("text-anchor","middle").text(d=>d.data.home?"Quê quán: "+d.data.home:"");
- node.append("text").attr("y",36).attr("text-anchor","middle").text(d=>d.data.gio?"Ngày giỗ: "+d.data.gio:"");
+ node.append("rect")
+  .attr("x",-120).attr("y",-60)
+  .attr("width",240).attr("height",140);
+
+ node.append("text")
+  .attr("y",-38).attr("text-anchor","middle")
+  .style("font-weight","bold")
+  .text(d=>d.data.name);
+
+ node.append("text")
+  .attr("y",-18).attr("text-anchor","middle")
+  .text(d=>d.data.id===1 ? "Thủy Tổ" : "Đời "+d.data.doi+" – Con "+d.data.order);
+
+ node.append("text")
+  .attr("y",0).attr("text-anchor","middle")
+  .style("font-size","12px")
+  .text(d=>d.data.birth ? "Năm sinh: "+d.data.birth : "");
+
+ node.append("text")
+  .attr("y",18).attr("text-anchor","middle")
+  .style("font-size","12px")
+  .text(d=>d.data.home ? "Quê quán: "+d.data.home : "");
+
+ node.append("text")
+  .attr("y",36).attr("text-anchor","middle")
+  .style("font-size","12px")
+  .text(d=>d.data.gio||"");
 }
 
-refresh();draw();
+refresh();
+draw();
 </script>
 </body>
 </html>
